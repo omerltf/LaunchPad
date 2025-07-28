@@ -90,6 +90,32 @@ npm start
 
 The server will start on `http://localhost:3001` by default.
 
+### Docker Support
+
+**Production Docker:**
+
+```bash
+# Build and run production container
+docker build -t nodejs-server .
+docker run -p 3001:3001 -e NODE_ENV=production nodejs-server
+
+# Or use Docker Compose (recommended)
+docker-compose up -d server
+```
+
+**Development Docker with hot reloading:**
+
+```bash
+# Build and run development container
+docker build -f Dockerfile.dev -t nodejs-server-dev .
+docker run -p 3001:3001 -v $(pwd)/src:/app/src nodejs-server-dev
+
+# Or use Docker Compose development setup
+docker-compose -f docker-compose.dev.yml up -d server-dev
+```
+
+For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
+
 ## 📚 API Documentation
 
 ### Health Check

@@ -1,0 +1,30 @@
+# Development Dockerfile for React client with hot reloading
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci && npm cache clean --force
+
+# Copy application source code
+COPY . .
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodeuser -u 1001
+
+# Change ownership of the app directory
+RUN chown -R nodeuser:nodejs /app
+
+# Switch to non-root user
+USER nodeuser
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the development server with hot reloading
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

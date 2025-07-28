@@ -1,0 +1,36 @@
+# Development Dockerfile for Node.js server with hot reloading
+FROM node:18-alpine
+
+# Install nodemon globally for hot reloading
+RUN npm install -g nodemon
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies)
+RUN npm ci && npm cache clean --force
+
+# Copy application source code
+COPY src/ ./src/
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodeuser -u 1001
+
+# Change ownership of the app directory
+RUN chown -R nodeuser:nodejs /app
+
+# Switch to non-root user
+USER nodeuser
+
+# Expose the port the app runs on
+EXPOSE 3001
+
+# Start the application with nodemon for hot reloading
+CMD ["npm", "run", "dev"]

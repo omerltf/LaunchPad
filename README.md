@@ -99,7 +99,28 @@ The application will be available at:
 - **Frontend**: <http://localhost:3000>
 - **Backend API**: <http://localhost:3001>
 
-## 📚 Documentation
+## � Docker Support
+
+This project includes comprehensive Docker support for both development and production environments.
+
+### Quick Docker Start
+
+```bash
+# Production environment
+docker-compose up -d
+
+# Development environment with hot reloading
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+### Docker Services
+
+- **Production**: Client (Nginx) on port 80, Server (Node.js) on port 3001
+- **Development**: Client (Vite) on port 3000, Server (Nodemon) on port 3001
+
+For detailed Docker documentation, see [DOCKER.md](./DOCKER.md)
+
+## �📚 Documentation
 
 ### Backend Documentation
 

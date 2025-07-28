@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Node.js Backend Server (Development)
+  server-dev:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile.dev
+    container_name: nodejs-server-dev
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - LOG_LEVEL=debug
+      - ENABLE_FILE_LOGGING=true
+      - RATE_LIMIT_WINDOW_MS=900000
+      - RATE_LIMIT_MAX_REQUESTS=1000
+    volumes:
+      - ./Server/src:/app/src
+      - ./Server/logs:/app/logs
+      - server-node-modules:/app/node_modules
+    networks:
+      - app-network
+    command: npm run dev
+
+  # React Frontend Client (Development)
+  client-dev:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile.dev
+    container_name: react-client-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    volumes:
+      - ./Client/src:/app/src
+      - ./Client/public:/app/public
+      - ./Client/index.html:/app/index.html
+      - ./Client/vite.config.js:/app/vite.config.js
+      - client-node-modules:/app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - server-dev
+    command: npm run dev -- --host 0.0.0.0
+
+networks:
+  app-network:
+    driver: bridge
+    name: project-dev-network
+
+volumes:
+  server-node-modules:
+    driver: local
+  client-node-modules:
+    driver: local

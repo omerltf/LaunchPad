@@ -60,6 +60,32 @@ npm run dev
 
 The client will start on `http://localhost:3000` and automatically open in your browser.
 
+### Docker Support
+
+**Production Docker:**
+
+```bash
+# Build production container (multi-stage build with Nginx)
+docker build -t react-client .
+docker run -p 80:80 react-client
+
+# Or use Docker Compose (recommended)
+docker-compose up -d client
+```
+
+**Development Docker with hot reloading:**
+
+```bash
+# Build and run development container
+docker build -f Dockerfile.dev -t react-client-dev .
+docker run -p 3000:3000 -v $(pwd)/src:/app/src react-client-dev
+
+# Or use Docker Compose development setup
+docker-compose -f docker-compose.dev.yml up -d client-dev
+```
+
+For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
+
 ## 📚 Available Scripts
 
 - `npm run dev` - Start development server with hot reload
