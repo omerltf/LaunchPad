@@ -46,13 +46,13 @@ config files:
 
 ### Installation
 
-1. Install dependencies:
+1: Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Start the development server:
+2: Start the development server:
 
 ```bash
 npm run dev
@@ -84,6 +84,7 @@ The application provides real-time monitoring of the backend server:
 Comprehensive user management interface:
 
 #### View Users
+
 - **User List**: Display all users in responsive card layout
 - **User Count**: Real-time count of total users
 - **User Details**: Name, email, ID, and creation date
@@ -91,12 +92,14 @@ Comprehensive user management interface:
 - **Refresh**: Manual refresh button to reload user data
 
 #### Add Users
+
 - **Form Validation**: Real-time validation for name and email
 - **Error Handling**: Clear error messages for validation failures
 - **Success Feedback**: Confirmation when user is created
 - **Auto-refresh**: User list updates automatically after creation
 
 #### Interactive Features
+
 - **Loading States**: Visual feedback during API operations
 - **Error Messages**: User-friendly error handling
 - **Responsive Layout**: Optimized for desktop, tablet, and mobile
@@ -105,6 +108,7 @@ Comprehensive user management interface:
 ### UI/UX Features
 
 #### Design System
+
 - **Modern CSS**: CSS Grid and Flexbox layouts
 - **Gradient Backgrounds**: Beautiful gradient color schemes
 - **Card-based Layout**: Clean, organized information display
@@ -112,12 +116,14 @@ Comprehensive user management interface:
 - **Loading Animations**: Smooth loading spinners and states
 
 #### Responsive Design
+
 - **Mobile-first**: Optimized for mobile devices
 - **Breakpoints**: Responsive design for all screen sizes
 - **Touch-friendly**: Large touch targets for mobile users
 - **Performance**: Optimized images and assets
 
 #### Accessibility
+
 - **Semantic HTML**: Proper HTML structure and elements
 - **ARIA Labels**: Screen reader friendly
 - **Keyboard Navigation**: Full keyboard accessibility
@@ -128,14 +134,17 @@ Comprehensive user management interface:
 The client connects to the server API at `http://localhost:3001` and uses the following endpoints:
 
 ### Server Information
+
 - **GET** `/` - Server status and environment information
 - **GET** `/health` - Detailed health check with metrics
 
 ### User Management
+
 - **GET** `/api/users` - Fetch all users with pagination
 - **POST** `/api/users` - Create new user with validation
 
 ### API Features
+
 - **Error Handling**: Comprehensive error catching and user feedback
 - **Loading States**: Visual feedback during API calls
 - **Retry Logic**: Automatic retry for failed requests
@@ -144,6 +153,7 @@ The client connects to the server API at `http://localhost:3001` and uses the fo
 ## 🎨 Styling Architecture
 
 ### CSS Organization
+
 ```text
 src/
 ├── index.css         # Global styles, variables, reset
@@ -151,6 +161,7 @@ src/
 ```
 
 ### Design Tokens
+
 ```css
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -163,6 +174,7 @@ src/
 ```
 
 ### Component Styles
+
 - **Card Components**: Consistent card styling with shadows
 - **Button System**: Multiple button variants (primary, secondary, success)
 - **Form Elements**: Styled inputs with focus states

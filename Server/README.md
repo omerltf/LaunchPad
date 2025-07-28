@@ -50,19 +50,19 @@ coverage/              # Test coverage reports (auto-generated)
 
 ### Installation
 
-1. Install dependencies:
+1: Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Configure environment variables:
+2: Configure environment variables:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Update the `.env` file with your configuration:
+3: Update the `.env` file with your configuration:
 
 ```bash
 # Required for production
@@ -149,6 +149,7 @@ The server will start on `http://localhost:3001` by default.
 - **GET** `/api/users`
 
 Query Parameters:
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 10, max: 100)
 - `search` (string): Search in name and email
@@ -167,6 +168,7 @@ Example: `/api/users?page=1&limit=10&search=john&sort=name&order=asc&active=true
 - **POST** `/api/users`
 
 Request Body:
+
 ```json
 {
   "name": "John Doe",
@@ -175,6 +177,7 @@ Request Body:
 ```
 
 Validation Rules:
+
 - `name`: Required, 2-50 characters, letters and spaces only
 - `email`: Required, valid email format, max 100 characters
 
@@ -183,6 +186,7 @@ Validation Rules:
 - **PUT** `/api/users/:id`
 
 Request Body (all fields optional):
+
 ```json
 {
   "name": "John Smith",
@@ -200,6 +204,7 @@ Request Body (all fields optional):
 All API responses follow a standardized format:
 
 **Success Response:**
+
 ```json
 {
   "success": true,
@@ -210,6 +215,7 @@ All API responses follow a standardized format:
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -280,6 +286,7 @@ The test suite includes:
 - **Middleware Tests**: Custom middleware validation
 
 Current coverage targets:
+
 - **Statements**: 80%+
 - **Branches**: 75%+
 - **Functions**: 80%+
