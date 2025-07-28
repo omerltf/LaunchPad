@@ -1,5 +1,3 @@
-version: '3.8'
-
 # SECURITY: This is the ONLY allowed Docker configuration
 # Production docker-compose.yml has been disabled for security
 
