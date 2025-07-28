@@ -1,37 +1,41 @@
-# Use Node.js official image as base
-FROM node:18-alpine
+# PRODUCTION DOCKERFILE DISABLED FOR SECURITY
+# This production Dockerfile has been commented out to prevent production deployments
+# Use Dockerfile.dev for development environment only
 
-# Set working directory
-WORKDIR /app
+# # Use Node.js official image as base
+# FROM node:18-alpine
 
-# Copy package files first for better layer caching
-COPY package*.json ./
+# # Set working directory
+# WORKDIR /app
 
-# Install production dependencies
-RUN npm ci --only=production && npm cache clean --force
+# # Copy package files first for better layer caching
+# COPY package*.json ./
 
-# Copy application source code
-COPY src/ ./src/
+# # Install production dependencies
+# RUN npm ci --only=production && npm cache clean --force
 
-# Create logs directory
-RUN mkdir -p logs
+# # Copy application source code
+# COPY src/ ./src/
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodeuser -u 1001
+# # Create logs directory
+# RUN mkdir -p logs
 
-# Change ownership of the app directory
-RUN chown -R nodeuser:nodejs /app
+# # Create non-root user for security
+# RUN addgroup -g 1001 -S nodejs
+# RUN adduser -S nodeuser -u 1001
 
-# Switch to non-root user
-USER nodeuser
+# # Change ownership of the app directory
+# RUN chown -R nodeuser:nodejs /app
 
-# Expose the port the app runs on
-EXPOSE 3001
+# # Switch to non-root user
+# USER nodeuser
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD node -e "const http=require('http');const options={hostname:'localhost',port:3001,path:'/health',timeout:3000};const req=http.request(options,res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));req.on('timeout',()=>process.exit(1));req.end();"
+# # Expose the port the app runs on
+# EXPOSE 3001
 
-# Start the application
-CMD ["npm", "start"]
+# # Add health check
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+#   CMD node -e "const http=require('http');const options={hostname:'localhost',port:3001,path:'/health',timeout:3000};const req=http.request(options,res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));req.on('timeout',()=>process.exit(1));req.end();"
+
+# # Start the application
+# CMD ["npm", "start"]

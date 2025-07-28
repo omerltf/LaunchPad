@@ -1,60 +1,64 @@
-version: '3.8'
+# PRODUCTION CONFIGURATION DISABLED FOR SECURITY
+# This file has been commented out to prevent production deployments
+# Use docker-compose.dev.yml for development environment only
 
-services:
-  # Node.js Backend Server
-  server:
-    build:
-      context: ./Server
-      dockerfile: Dockerfile
-    container_name: nodejs-server
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:3001"
-    environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - LOG_LEVEL=info
-      - ENABLE_FILE_LOGGING=true
-      - RATE_LIMIT_WINDOW_MS=900000
-      - RATE_LIMIT_MAX_REQUESTS=100
-    volumes:
-      - server-logs:/app/logs
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "node", "-e", "const http=require('http');const options={hostname:'localhost',port:3001,path:'/health',timeout:3000};const req=http.request(options,res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));req.on('timeout',()=>process.exit(1));req.end();"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+# version: '3.8'
 
-  # React Frontend Client
-  client:
-    build:
-      context: ./Client
-      dockerfile: Dockerfile
-    container_name: react-client
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:80:80"
-    depends_on:
-      server:
-        condition: service_healthy
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+# services:
+#   # Node.js Backend Server - PRODUCTION DISABLED
+#   server:
+#     build:
+#       context: ./Server
+#       dockerfile: Dockerfile
+#     container_name: nodejs-server
+#     restart: unless-stopped
+#     ports:
+#       - "127.0.0.1:3001:3001"
+#     environment:
+#       - NODE_ENV=production
+#       - PORT=3001
+#       - LOG_LEVEL=info
+#       - ENABLE_FILE_LOGGING=true
+#       - RATE_LIMIT_WINDOW_MS=900000
+#       - RATE_LIMIT_MAX_REQUESTS=100
+#     volumes:
+#       - server-logs:/app/logs
+#     networks:
+#       - app-network
+#     healthcheck:
+#       test: ["CMD", "node", "-e", "const http=require('http');const options={hostname:'localhost',port:3001,path:'/health',timeout:3000};const req=http.request(options,res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));req.on('timeout',()=>process.exit(1));req.end();"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+#       start_period: 40s
 
-networks:
-  app-network:
-    driver: bridge
-    name: project-network
+#   # React Frontend Client - PRODUCTION DISABLED
+#   client:
+#     build:
+#       context: ./Client
+#       dockerfile: Dockerfile
+#     container_name: react-client
+#     restart: unless-stopped
+#     ports:
+#       - "127.0.0.1:80:80"
+#     depends_on:
+#       server:
+#         condition: service_healthy
+#     networks:
+#       - app-network
+#     healthcheck:
+#       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+#       start_period: 40s
 
-volumes:
-  server-logs:
-    driver: local
-    name: project-server-logs
+# networks:
+#   app-network:
+#     driver: bridge
+#     name: project-network
+
+# volumes:
+#   server-logs:
+#     driver: local
+#     name: project-server-logs

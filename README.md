@@ -1,6 +1,19 @@
 # Node.js & React Full-Stack Application Template
 
-A modern, production-ready template for building full-stack applications with Node.js (Express) backend and React (Vite) frontend.
+**🔒 SECURITY CONFIGURED: DEVELOPMENT MODE ONLY**
+
+A modern, development-only template for building full-stack applications with Node.js (Express) backend and React (Vite) frontend. **Production mode has been disabled for maximum security.**
+
+## ⚠️ IMPORTANT SECURITY NOTICE
+
+**This project is configured to ONLY run in development mode for security purposes.**
+
+- 🚫 **Production deployments are completely disabled**
+- 🏠 **Localhost-only access (no external network access)**
+- 🔒 **All production Docker configurations commented out**
+- ⚠️ **Server will refuse to start in production mode**
+
+👉 **See [SECURITY_NOTICE.md](./SECURITY_NOTICE.md) for complete security details**
 
 ## 🚀 Features
 

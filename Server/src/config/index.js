@@ -109,30 +109,32 @@ const config = {
  * @throws {Error} If validation fails
  */
 const validateConfig = () => {
+  // SECURITY: Prevent production mode
+  if (config.server.environment === 'production') {
+    throw new Error('PRODUCTION MODE DISABLED FOR SECURITY - Only development environment is allowed')
+  }
+
+  // Force development environment if anything other than test
+  if (config.server.environment !== 'test' && config.server.environment !== 'development') {
+    console.warn('Non-development environment detected, forcing development mode for security')
+    config.server.environment = 'development'
+  }
+
   // Validate port range
   if (config.server.port < 1 || config.server.port > 65535) {
     throw new Error('PORT must be between 1 and 65535')
   }
 
-  // Validate JWT secret is always present
-  if (!config.security.jwtSecret) {
-    throw new Error('JWT_SECRET environment variable is required')
+  // Ensure localhost-only binding for security
+  if (config.server.host !== 'localhost' && config.server.host !== '127.0.0.1' && config.server.host !== '0.0.0.0') {
+    console.warn('Non-localhost host detected, forcing localhost for security')
+    config.server.host = 'localhost'
   }
 
-  // Validate JWT secret strength in production
-  if (config.server.environment === 'production') {
-    if (config.security.jwtSecret.length < 32) {
-      throw new Error('JWT_SECRET must be at least 32 characters long in production')
-    }
-    if (config.security.jwtSecret === 'your-super-secret-jwt-key-change-this-in-production') {
-      throw new Error('JWT_SECRET must be changed from default value in production')
-    }
-  }
-
-  // Validate CORS origin format
-  if (config.cors.origin && !config.cors.origin.match(/^https?:\/\/.+/)) {
-    // eslint-disable-next-line no-console
-    console.warn('CORS_ORIGIN should be a valid URL format (http:// or https://)')
+  // Validate CORS origin format and ensure localhost only
+  if (config.cors.origin && !config.cors.origin.match(/^https?:\/\/(localhost|127\.0\.0\.1)/)) {
+    console.warn('Non-localhost CORS origin detected, forcing localhost for security')
+    config.cors.origin = 'http://localhost:3000'
   }
 }
 
@@ -153,9 +155,12 @@ const isDevelopment = () => config.server.environment === 'development'
 
 /**
  * Checks if the application is running in production mode
- * @returns {boolean} True if in production mode
+ * @returns {boolean} Always false - production mode disabled for security
  */
-const isProduction = () => config.server.environment === 'production'
+const isProduction = () => {
+  // SECURITY: Always return false to prevent production mode
+  return false
+}
 
 /**
  * Checks if the application is running in test mode

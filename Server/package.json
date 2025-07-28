@@ -4,7 +4,7 @@
   "description": "Node.js server application",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "echo 'PRODUCTION START DISABLED - Use npm run dev for development only' && exit 1",
     "dev": "nodemon src/app.js",
     "test": "jest",
     "lint": "eslint src/",

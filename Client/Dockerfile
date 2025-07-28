@@ -1,53 +1,57 @@
-# Multi-stage build for optimized production image
+# PRODUCTION DOCKERFILE DISABLED FOR SECURITY
+# This production Dockerfile has been commented out to prevent production deployments
+# Use Dockerfile.dev for development environment only
 
-# Stage 1: Build stage
-FROM node:18-alpine AS builder
+# # Multi-stage build for optimized production image
 
-# Set working directory
-WORKDIR /app
+# # Stage 1: Build stage
+# FROM node:18-alpine AS builder
 
-# Copy package files
-COPY package*.json ./
+# # Set working directory
+# WORKDIR /app
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci && npm cache clean --force
+# # Copy package files
+# COPY package*.json ./
 
-# Copy source code
-COPY . .
+# # Install all dependencies (including devDependencies for build)
+# RUN npm ci && npm cache clean --force
 
-# Build the application
-RUN npm run build
+# # Copy source code
+# COPY . .
 
-# Stage 2: Production stage
-FROM nginx:alpine
+# # Build the application
+# RUN npm run build
 
-# Copy built application from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# # Stage 2: Production stage
+# FROM nginx:alpine
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# # Copy built application from builder stage
+# COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nginxuser
-RUN adduser -S nginxuser -u 1001
+# # Copy custom nginx configuration
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Change ownership of nginx directories
-RUN chown -R nginxuser:nginxuser /usr/share/nginx/html
-RUN chown -R nginxuser:nginxuser /var/cache/nginx
-RUN chown -R nginxuser:nginxuser /var/log/nginx
-RUN chown -R nginxuser:nginxuser /etc/nginx/conf.d
-RUN touch /var/run/nginx.pid
-RUN chown -R nginxuser:nginxuser /var/run/nginx.pid
+# # Create non-root user for security
+# RUN addgroup -g 1001 -S nginxuser
+# RUN adduser -S nginxuser -u 1001
 
-# Switch to non-root user
-USER nginxuser
+# # Change ownership of nginx directories
+# RUN chown -R nginxuser:nginxuser /usr/share/nginx/html
+# RUN chown -R nginxuser:nginxuser /var/cache/nginx
+# RUN chown -R nginxuser:nginxuser /var/log/nginx
+# RUN chown -R nginxuser:nginxuser /etc/nginx/conf.d
+# RUN touch /var/run/nginx.pid
+# RUN chown -R nginxuser:nginxuser /var/run/nginx.pid
 
-# Expose port 80
-EXPOSE 80
+# # Switch to non-root user
+# USER nginxuser
 
-# Add health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+# # Expose port 80
+# EXPOSE 80
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# # Add health check
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+#   CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+
+# # Start nginx
+# CMD ["nginx", "-g", "daemon off;"]

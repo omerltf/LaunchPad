@@ -1,7 +1,10 @@
 version: '3.8'
 
+# SECURITY: This is the ONLY allowed Docker configuration
+# Production docker-compose.yml has been disabled for security
+
 services:
-  # Node.js Backend Server (Development)
+  # Node.js Backend Server (Development ONLY)
   server-dev:
     build:
       context: ./Server
@@ -9,7 +12,7 @@ services:
     container_name: nodejs-server-dev
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3001:3001"
+      - "127.0.0.1:3001:3001"  # Localhost only for security
     environment:
       - NODE_ENV=development
       - PORT=3001
@@ -17,6 +20,7 @@ services:
       - ENABLE_FILE_LOGGING=true
       - RATE_LIMIT_WINDOW_MS=900000
       - RATE_LIMIT_MAX_REQUESTS=1000
+      - SECURITY_MODE=development_only
     volumes:
       - ./Server/src:/app/src
       - ./Server/logs:/app/logs
@@ -25,7 +29,7 @@ services:
       - app-network
     command: npm run dev
 
-  # React Frontend Client (Development)
+  # React Frontend Client (Development ONLY)
   client-dev:
     build:
       context: ./Client
@@ -33,9 +37,10 @@ services:
     container_name: react-client-dev
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3000:3000"  # Localhost only for security
     environment:
       - VITE_API_URL=http://localhost:3001
+      - NODE_ENV=development
     volumes:
       - ./Client/src:/app/src
       - ./Client/public:/app/public
