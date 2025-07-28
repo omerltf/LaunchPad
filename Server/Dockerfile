@@ -2,8 +2,8 @@
 # This production Dockerfile has been commented out to prevent production deployments
 # Use Dockerfile.dev for development environment only
 
-# # Use Node.js official image as base
-# FROM node:18-alpine
+# Use Node.js official image as base
+FROM node:18-alpine
 
 # # Set working directory
 # WORKDIR /app

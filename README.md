@@ -1,6 +1,6 @@
 # Node.js & React Full-Stack Application Template
 
-**🔒 SECURITY CONFIGURED: DEVELOPMENT MODE ONLY**
+## 🔒 SECURITY CONFIGURED: DEVELOPMENT MODE ONLY
 
 A modern, development-only template for building full-stack applications with Node.js (Express) backend and React (Vite) frontend. **Production mode has been disabled for maximum security.**
 

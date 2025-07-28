@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * @fileoverview Application configuration module
  * @description Centralized configuration management with environment validation

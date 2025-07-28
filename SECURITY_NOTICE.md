@@ -32,6 +32,7 @@ This project has been configured to **ONLY RUN IN DEVELOPMENT MODE** for maximum
 ### 🚀 HOW TO RUN (DEVELOPMENT ONLY)
 
 #### Option 1: Docker Development Environment
+
 ```bash
 # Use development docker-compose only
 docker-compose -f docker-compose.dev.yml up
@@ -41,6 +42,7 @@ docker-compose -f docker-compose.dev.yml up --build
 ```
 
 #### Option 2: Local Development
+
 ```bash
 # Server (in Server directory)
 npm install
@@ -52,6 +54,7 @@ npm run dev
 ```
 
 #### Option 3: VS Code Task
+
 ```bash
 # Use the configured VS Code task
 # Run: Start Server (development mode)

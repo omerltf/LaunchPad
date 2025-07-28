@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * @fileoverview Main application entry point
  * @description Express.js application with middleware setup and route configuration
@@ -171,7 +172,7 @@ if (!require.main || require.main === module) {
     const server = app.listen(config.server.port, config.server.host, () => {
       logger.info(`🚀 Server running on http://${config.server.host}:${config.server.port}`)
       logger.info(`📊 Environment: ${config.server.environment} (DEVELOPMENT ONLY)`)
-      logger.info(`🔒 Security: Production mode disabled, localhost only`)
+      logger.info('🔒 Security: Production mode disabled, localhost only')
       logger.info(`🕒 Started at: ${new Date().toISOString()}`)
     })
 
