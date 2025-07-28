@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "launchpad-server",
   "version": "1.0.0",
-  "description": "Node.js server application",
+  "description": "LaunchPad - Node.js server template for full-stack applications",
   "main": "src/app.js",
   "scripts": {
     "start": "echo 'PRODUCTION START DISABLED - Use npm run dev for development only' && exit 1",
@@ -11,9 +11,13 @@
     "lint:fix": "eslint src/ --fix"
   },
   "keywords": [
+    "launchpad",
+    "template",
+    "starter",
     "nodejs",
     "express",
-    "server"
+    "server",
+    "fullstack"
   ],
   "author": "",
   "license": "MIT",
