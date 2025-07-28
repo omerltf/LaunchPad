@@ -47,14 +47,19 @@ const config = {
 
   // Security Configuration
   security: {
-    jwtSecret: process.env.JWT_SECRET || 'fallback-secret-change-in-production',
+    jwtSecret: process.env.JWT_SECRET, // Remove fallback - make required
     helmet: {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'"],
           scriptSrc: ["'self'"],
-          imgSrc: ["'self'", 'data:', 'https:']
+          imgSrc: ["'self'", 'data:', 'https:'],
+          connectSrc: ["'self'"],
+          fontSrc: ["'self'"],
+          objectSrc: ["'none'"],
+          mediaSrc: ["'self'"],
+          frameSrc: ["'none'"]
         }
       }
     }
@@ -109,10 +114,19 @@ const validateConfig = () => {
     throw new Error('PORT must be between 1 and 65535')
   }
 
-  // Validate JWT secret in production
-  if (config.server.environment === 'production' &&
-      config.security.jwtSecret === 'fallback-secret-change-in-production') {
-    throw new Error('JWT_SECRET must be set in production environment')
+  // Validate JWT secret is always present
+  if (!config.security.jwtSecret) {
+    throw new Error('JWT_SECRET environment variable is required')
+  }
+
+  // Validate JWT secret strength in production
+  if (config.server.environment === 'production') {
+    if (config.security.jwtSecret.length < 32) {
+      throw new Error('JWT_SECRET must be at least 32 characters long in production')
+    }
+    if (config.security.jwtSecret === 'your-super-secret-jwt-key-change-this-in-production') {
+      throw new Error('JWT_SECRET must be changed from default value in production')
+    }
   }
 
   // Validate CORS origin format

@@ -63,12 +63,16 @@ app.use('/api', require('./routes/api'))
 app.get('/health', (req, res) => {
   const healthData = {
     status: 'OK',
-    uptime: process.uptime(),
     timestamp: new Date().toISOString(),
     environment: config.server.environment,
-    version: config.api.version,
-    memory: process.memoryUsage(),
-    pid: process.pid
+    version: config.api.version
+  }
+
+  // Only include detailed info in development
+  if (isDevelopment()) {
+    healthData.uptime = process.uptime()
+    healthData.memory = process.memoryUsage()
+    healthData.pid = process.pid
   }
 
   logger.info('Health check requested', { ip: req.ip })
