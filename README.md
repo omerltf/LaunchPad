@@ -18,6 +18,7 @@ A modern, production-ready template for building scalable full-stack application
 ## ✨ What's Included
 
 ### 🎯 Modern Tech Stack
+
 - **Frontend**: React 18 + Vite + Tailwind CSS
 - **Backend**: Node.js + Express.js
 - **Styling**: Tailwind CSS with custom design system
@@ -77,12 +78,14 @@ Project1/
 
 1. **Click "Use this template"** on GitHub to create your own repository
 2. **Clone your new repository**:
+
    ```bash
    git clone https://github.com/yourusername/your-project-name.git
    cd your-project-name
    ```
 
 3. **Install dependencies**:
+
    ```bash
    # Install server dependencies
    cd Server && npm install
@@ -92,6 +95,7 @@ Project1/
    ```
 
 4. **Start development**:
+
    ```bash
    # Terminal 1: Start backend server
    cd Server && npm run dev
@@ -112,7 +116,7 @@ cd Server && npm install
 cd ../Client && npm install
 ```
 
-### 2. Environment Configuration
+### 2. Configure Server Environment
 
 ```bash
 # Setup server environment
@@ -145,11 +149,13 @@ The application will be available at:
 ### 1. Update Project Information
 
 **Package Names & Descriptions:**
+
 - `Server/package.json` - Update name, description, author
 - `Client/package.json` - Update name, description, author  
 - `Client/index.html` - Update title and meta information
 
 **Application Branding:**
+
 - `Client/src/App.jsx` - Update app title and description
 - `Client/public/` - Replace favicon and logos
 - `README.md` - Update with your project details
@@ -164,6 +170,7 @@ cp .env.example .env
 ```
 
 **Key Variables to Configure:**
+
 - `JWT_SECRET` - For authentication (required)
 - `DATABASE_URL` - If adding database integration
 - `API_BASE_URL` - Update client API endpoint if needed
@@ -171,6 +178,7 @@ cp .env.example .env
 ### 3. Customize Styling
 
 **Tailwind Configuration:**
+
 - `Client/tailwind.config.js` - Update colors, fonts, spacing
 - `Client/src/index.css` - Modify component classes
 - `Client/src/App.jsx` - Update UI components and layout
