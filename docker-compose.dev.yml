@@ -9,7 +9,7 @@ services:
     container_name: nodejs-server-dev
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "127.0.0.1:3001:3001"
     environment:
       - NODE_ENV=development
       - PORT=3001
@@ -33,7 +33,7 @@ services:
     container_name: react-client-dev
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - VITE_API_URL=http://localhost:3001
     volumes:
@@ -46,7 +46,7 @@ services:
       - app-network
     depends_on:
       - server-dev
-    command: npm run dev -- --host 0.0.0.0
+    command: npm run dev
 
 networks:
   app-network:
