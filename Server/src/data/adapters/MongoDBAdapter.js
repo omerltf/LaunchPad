@@ -48,7 +48,7 @@ class MongoDBAdapter extends BaseDatabaseAdapter {
       logger.info('Connected to MongoDB successfully')
       */
 
-      throw new Error('MongoDB adapter not implemented. Install mongodb package and uncomment the implementation.')
+      throw new Error('MongoDB adapter not implemented. Run `npm install mongodb` and uncomment the implementation in this file.')
     } catch (error) {
       logger.error('Failed to connect to MongoDB:', error)
       throw error
