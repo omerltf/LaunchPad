@@ -85,10 +85,22 @@ const config = {
     format: process.env.LOG_FORMAT || 'combined'
   },
 
-  // Database Configuration (for future use)
+  // Database Configuration
   database: {
-    url: process.env.DATABASE_URL || null,
-    maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10) || 20
+    type: process.env.DB_TYPE || 'memory',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT, 10) || null,
+    database: process.env.DB_NAME || 'launchpad_dev',
+    user: process.env.DB_USER || null,
+    password: process.env.DB_PASSWORD || null,
+    connectionString: process.env.DB_CONNECTION_STRING || process.env.DATABASE_URL || null,
+    filename: process.env.DB_FILENAME || null, // For SQLite
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT, 10) || parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10) || 10,
+    options: {
+      // Additional database-specific options
+      ssl: process.env.DB_SSL === 'true',
+      timeout: parseInt(process.env.DB_TIMEOUT, 10) || 30000
+    }
   },
 
   // Email Configuration (for future use)
