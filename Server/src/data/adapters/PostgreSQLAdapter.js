@@ -53,7 +53,7 @@ class PostgreSQLAdapter extends BaseDatabaseAdapter {
       logger.info('Connected to PostgreSQL successfully')
       */
 
-      throw new Error('PostgreSQL adapter not implemented. Install pg package and uncomment the implementation.')
+      throw new Error('PostgreSQL adapter not implemented. Run `npm install pg` to install the required package and uncomment the implementation in this file.')
     } catch (error) {
       logger.error('Failed to connect to PostgreSQL:', error)
       throw error
