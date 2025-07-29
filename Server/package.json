@@ -8,7 +8,12 @@
     "dev": "nodemon src/app.js",
     "test": "jest",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "db:migrate": "node src/data/database-cli.js migrate",
+    "db:rollback": "node src/data/database-cli.js rollback",
+    "db:status": "node src/data/database-cli.js status",
+    "db:health": "node src/data/database-cli.js health",
+    "db:example": "node src/data/database-cli.js example"
   },
   "keywords": [
     "launchpad",
