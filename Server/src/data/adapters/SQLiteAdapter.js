@@ -51,7 +51,7 @@ class SQLiteAdapter extends BaseDatabaseAdapter {
       logger.info('Connected to SQLite successfully')
       */
 
-      throw new Error('SQLite adapter not implemented. Install sqlite3 package and uncomment the implementation.')
+      throw new Error('SQLite adapter not implemented. Run `npm install sqlite3` to install the required package, and uncomment the implementation in this file to enable the SQLite adapter.')
     } catch (error) {
       logger.error('Failed to connect to SQLite:', error)
       throw error
