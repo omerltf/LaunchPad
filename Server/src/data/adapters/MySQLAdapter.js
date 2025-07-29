@@ -53,7 +53,7 @@ class MySQLAdapter extends BaseDatabaseAdapter {
       logger.info('Connected to MySQL successfully')
       */
 
-      throw new Error('MySQL adapter not implemented. Install mysql2 package and uncomment the implementation.')
+      throw new Error('MySQL adapter not implemented. Run `npm install mysql2` to install the required package and uncomment the implementation in this file.')
     } catch (error) {
       logger.error('Failed to connect to MySQL:', error)
       throw error
