@@ -93,6 +93,31 @@ app.get('/health', (req, res) => {
   res.status(200).json(healthData)
 })
 
+// Maintenance mode state
+let maintenanceMode = false
+
+// Maintenance mode endpoints
+app.get('/maintenance', (req, res) => {
+  res.status(200).json({
+    maintenanceMode,
+    message: maintenanceMode ? 'Application is in maintenance mode' : 'Application is in live mode',
+    timestamp: new Date().toISOString()
+  })
+})
+
+app.post('/maintenance/toggle', (req, res) => {
+  maintenanceMode = !maintenanceMode
+  const message = maintenanceMode ? 'Switched to maintenance mode' : 'Switched to live mode'
+
+  logger.info(`Maintenance mode toggled: ${maintenanceMode}`, { ip: req.ip })
+
+  res.status(200).json({
+    maintenanceMode,
+    message,
+    timestamp: new Date().toISOString()
+  })
+})
+
 // Root endpoint with server information
 app.get('/', (req, res) => {
   const serverInfo = {
