@@ -26,6 +26,8 @@ let onTokenExpiredCallback = null
 /**
  * Set callback to be called when token expires
  * @param {Function} callback - Function to call when token expires
+ * @note This is designed to be called once by the AuthProvider at app initialization.
+ *       Since AuthProvider is a singleton at the root level, there's no risk of conflicts.
  */
 export const setTokenExpiredCallback = (callback) => {
   onTokenExpiredCallback = callback
