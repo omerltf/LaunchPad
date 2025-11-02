@@ -228,6 +228,28 @@ class AuthService {
   }
 
   /**
+   * Decode base64url encoded string (JWT-safe)
+   * @param {string} str - Base64url encoded string
+   * @returns {string} Decoded string
+   * @private
+   */
+  base64urlDecode(str) {
+    // Convert base64url to base64 by replacing URL-safe characters
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/')
+    // Add padding if needed
+    while (base64.length % 4) {
+      base64 += '='
+    }
+    // Decode using atob and handle Unicode properly
+    return decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    )
+  }
+
+  /**
    * Check if user is authenticated
    * @returns {boolean} True if access token exists and is not expired
    */
@@ -237,7 +259,7 @@ class AuthService {
 
     try {
       // Decode JWT (header.payload.signature)
-      const payload = JSON.parse(atob(token.split('.')[1]))
+      const payload = JSON.parse(this.base64urlDecode(token.split('.')[1]))
       // Check if token is expired (exp is in seconds)
       if (payload.exp && Date.now() / 1000 < payload.exp) {
         return true
