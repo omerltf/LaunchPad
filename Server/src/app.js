@@ -17,6 +17,8 @@ const { config, isDevelopment, isProduction } = require('./config')
 const { logger } = require('./utils/logger')
 const { sendError } = require('./utils/helpers')
 const { requestTimer, handleCors } = require('./middleware')
+const MaintenanceManager = require('./utils/MaintenanceManager')
+const { createMaintenanceMiddleware } = require('./middleware/maintenanceMode')
 
 // SECURITY: Prevent production mode startup
 if (isProduction() || config.server.environment === 'production') {
@@ -33,6 +35,17 @@ if (config.server.host !== 'localhost' && config.server.host !== '127.0.0.1' && 
 
 // Initialize Express app
 const app = express()
+
+// Initialize Maintenance Manager
+const maintenanceManager = new MaintenanceManager('file')
+// Initialize immediately (async IIFE)
+;(async () => {
+  try {
+    await maintenanceManager.initialize()
+  } catch (error) {
+    logger.error('Failed to initialize MaintenanceManager', error)
+  }
+})()
 
 // Trust proxy for proper IP detection when behind reverse proxy
 app.set('trust proxy', 1)
@@ -70,6 +83,15 @@ app.use(express.urlencoded({
   limit: config.api.bodyLimit
 }))
 
+// Maintenance mode middleware - blocks requests when enabled
+app.use(createMaintenanceMiddleware(maintenanceManager, {
+  whitelist: [
+    '/health',
+    '/maintenance',
+    '/' // Allow root endpoint
+  ]
+}))
+
 // API routes
 app.use('/api', require('./routes/api'))
 
@@ -93,32 +115,107 @@ app.get('/health', (req, res) => {
   res.status(200).json(healthData)
 })
 
-// Maintenance mode state
-let maintenanceMode = false
-
 // Maintenance mode endpoints
-app.get('/maintenance', (req, res) => {
-  res.status(200).json({
-    maintenanceMode,
-    message: maintenanceMode ? 'Application is in maintenance mode' : 'Application is in live mode',
-    timestamp: new Date().toISOString()
-  })
+app.get('/maintenance', async (req, res) => {
+  try {
+    const status = await maintenanceManager.getStatus()
+    res.status(200).json({
+      maintenanceMode: status.enabled,
+      message: status.message,
+      lastModified: status.lastModified,
+      modifiedBy: status.modifiedBy,
+      timestamp: status.timestamp
+    })
+  } catch (error) {
+    logger.error('Error getting maintenance status', error)
+    res.status(500).json({
+      error: 'Failed to get maintenance status',
+      message: error.message
+    })
+  }
 })
 
-app.post('/maintenance/toggle', (req, res) => {
-  maintenanceMode = !maintenanceMode
-  const message = maintenanceMode ? 'Switched to maintenance mode' : 'Switched to live mode'
-
-  logger.info(`Maintenance mode toggled: ${maintenanceMode}`, { ip: req.ip })
-
-  res.status(200).json({
-    maintenanceMode,
-    message,
-    timestamp: new Date().toISOString()
-  })
+app.post('/maintenance/toggle', async (req, res) => {
+  try {
+    const { message, modifiedBy } = req.body
+    const status = await maintenanceManager.toggle(
+      message || null,
+      modifiedBy || 'admin'
+    )
+    
+    const actionMessage = status.enabled 
+      ? 'Switched to maintenance mode' 
+      : 'Switched to live mode'
+    
+    res.status(200).json({
+      maintenanceMode: status.enabled,
+      message: status.message,
+      actionMessage,
+      lastModified: status.lastModified,
+      modifiedBy: status.modifiedBy,
+      timestamp: status.timestamp
+    })
+  } catch (error) {
+    logger.error('Error toggling maintenance mode', error)
+    res.status(500).json({
+      error: 'Failed to toggle maintenance mode',
+      message: error.message
+    })
+  }
 })
 
-// Root endpoint with server information
+// Update maintenance message without changing state
+app.put('/maintenance/message', async (req, res) => {
+  try {
+    const { message, modifiedBy } = req.body
+    
+    if (!message) {
+      return res.status(400).json({
+        error: 'Message is required',
+        code: 'MISSING_MESSAGE'
+      })
+    }
+    
+    const status = await maintenanceManager.updateMessage(
+      message,
+      modifiedBy || 'admin'
+    )
+    
+    res.status(200).json({
+      maintenanceMode: status.enabled,
+      message: status.message,
+      lastModified: status.lastModified,
+      modifiedBy: status.modifiedBy,
+      timestamp: status.timestamp
+    })
+  } catch (error) {
+    logger.error('Error updating maintenance message', error)
+    res.status(500).json({
+      error: 'Failed to update message',
+      message: error.message
+    })
+  }
+})
+
+// Get maintenance history
+app.get('/maintenance/history', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10
+    const history = await maintenanceManager.getHistory(limit)
+    
+    res.status(200).json({
+      history,
+      count: history.length,
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    logger.error('Error getting maintenance history', error)
+    res.status(500).json({
+      error: 'Failed to get history',
+      message: error.message
+    })
+  }
+})// Root endpoint with server information
 app.get('/', (req, res) => {
   const serverInfo = {
     message: 'Server is running in DEVELOPMENT MODE ONLY!',

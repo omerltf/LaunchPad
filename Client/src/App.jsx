@@ -11,6 +11,8 @@ function App() {
   const [newUser, setNewUser] = useState({ name: '', email: '' })
   const [maintenanceMode, setMaintenanceMode] = useState(false)
   const [maintenanceLoading, setMaintenanceLoading] = useState(false)
+  const [maintenanceMessage, setMaintenanceMessage] = useState('')
+  const [maintenanceInfo, setMaintenanceInfo] = useState(null)
 
   // Fetch server info on component mount
   useEffect(() => {
@@ -23,6 +25,11 @@ function App() {
     try {
       const response = await axios.get(`${API_BASE_URL}/maintenance`)
       setMaintenanceMode(response.data.maintenanceMode)
+      setMaintenanceMessage(response.data.message || '')
+      setMaintenanceInfo({
+        lastModified: response.data.lastModified,
+        modifiedBy: response.data.modifiedBy
+      })
     } catch (err) {
       console.error('Failed to fetch maintenance mode:', err)
     }
@@ -88,14 +95,18 @@ function App() {
     setMaintenanceLoading(true)
     setError(null)
     try {
-      const response = await axios.post(`${API_BASE_URL}/maintenance/toggle`)
+      const response = await axios.post(`${API_BASE_URL}/maintenance/toggle`, {
+        modifiedBy: 'admin' // In production, this would come from authenticated user
+      })
       setMaintenanceMode(response.data.maintenanceMode)
+      setMaintenanceMessage(response.data.message)
+      setMaintenanceInfo({
+        lastModified: response.data.lastModified,
+        modifiedBy: response.data.modifiedBy
+      })
       
       // Show success message
-      const message = response.data.maintenanceMode 
-        ? 'Application switched to maintenance mode' 
-        : 'Application switched to live mode'
-      alert(message)
+      alert(response.data.actionMessage || 'Maintenance mode toggled successfully')
     } catch (err) {
       setError('Failed to toggle maintenance mode')
       console.error('Toggle maintenance mode error:', err)
@@ -109,10 +120,15 @@ function App() {
       {/* Maintenance Mode Overlay */}
       {maintenanceMode && (
         <div className="fixed inset-0 bg-orange-500 bg-opacity-20 backdrop-blur-sm z-10 pointer-events-none">
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg pointer-events-auto">
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg pointer-events-auto max-w-2xl">
             <div className="flex items-center space-x-2">
               <span className="text-lg">🔧</span>
-              <span className="font-semibold">Maintenance Mode Active</span>
+              <div>
+                <p className="font-semibold">Maintenance Mode Active</p>
+                {maintenanceMessage && (
+                  <p className="text-sm opacity-90 mt-1">{maintenanceMessage}</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -162,11 +178,17 @@ function App() {
                 {maintenanceMode ? '🔧 Maintenance Mode' : '🟢 Live Mode'}
               </p>
               <p className="text-sm mt-2 opacity-80">
-                {maintenanceMode 
+                {maintenanceMessage || (maintenanceMode 
                   ? 'Application is currently under maintenance' 
                   : 'Application is running normally'
-                }
+                )}
               </p>
+              {maintenanceInfo && (
+                <div className="text-xs mt-3 opacity-60 space-y-1">
+                  <p>Modified by: {maintenanceInfo.modifiedBy}</p>
+                  <p>Last changed: {new Date(maintenanceInfo.lastModified).toLocaleString()}</p>
+                </div>
+              )}
             </div>
             <div className="text-center">
               <button 

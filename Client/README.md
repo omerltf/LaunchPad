@@ -6,9 +6,11 @@ A modern React client application built with Vite to interact with the Node.js s
 
 - ✅ **React 18** with modern hooks and best practices
 - ✅ **Vite** for lightning-fast development and optimized builds
+- ✅ **Tailwind CSS** with custom design system and components
 - ✅ **Axios** for robust API communication with error handling
-- ✅ **Responsive Design** with CSS Grid, Flexbox, and modern layouts
+- ✅ **Responsive Design** with modern layouts and animations
 - ✅ **Real-time Server Status** monitoring and health checks
+- ✅ **Maintenance Mode UI** with visual indicators and controls
 - ✅ **User Management** with full CRUD operations
 - ✅ **Loading States** and progress indicators
 - ✅ **Error Handling** with user-friendly messages
@@ -94,6 +96,42 @@ For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
 - `npm run lint` - Run ESLint for code quality
 
 ## 🎯 Features Overview
+
+### Maintenance Mode Control
+
+Visual and interactive maintenance mode management:
+
+- **Status Indicator**: Real-time display of current mode (🔧 Maintenance / 🟢 Live)
+- **Custom Messages**: Display server-set maintenance messages to users
+- **Visual Overlay**: Subtle backdrop blur effect when in maintenance mode
+- **One-Click Toggle**: Easy switching between maintenance and live modes
+- **Metadata Display**: Shows who last modified and when
+- **Form Disabling**: Automatically disables user actions during maintenance
+- **Warning Messages**: Clear communication about disabled features
+
+**Maintenance Mode Features:**
+
+```jsx
+// State management
+const [maintenanceMode, setMaintenanceMode] = useState(false)
+const [maintenanceMessage, setMaintenanceMessage] = useState('')
+const [maintenanceInfo, setMaintenanceInfo] = useState(null)
+
+// Toggle function
+const toggleMaintenanceMode = async () => {
+  const response = await axios.post(`${API_BASE_URL}/maintenance/toggle`, {
+    modifiedBy: 'admin'
+  })
+  // Updates UI with new status
+}
+```
+
+**UI Components:**
+
+- **Control Panel**: Dedicated card with status and toggle button
+- **Overlay Banner**: Fixed position banner at top when active
+- **Disabled Forms**: Visual feedback on unavailable features
+- **Status Colors**: Orange for maintenance, green for live
 
 ### Server Status Dashboard
 
@@ -202,10 +240,35 @@ src/
 ### Component Styles
 
 - **Card Components**: Consistent card styling with shadows
-- **Button System**: Multiple button variants (primary, secondary, success)
+- **Button System**: Multiple button variants (primary, secondary, success, maintenance, live)
 - **Form Elements**: Styled inputs with focus states
-- **Status Indicators**: Color-coded status displays
+- **Status Indicators**: Color-coded status displays (success, warning, error)
 - **Loading States**: Animated loading spinners
+- **Maintenance Mode Styles**: Orange theme for maintenance UI elements
+
+### Maintenance Mode Styling
+
+```css
+/* Maintenance mode button styles */
+.btn-maintenance {
+  @apply bg-gradient-to-r from-orange-500 to-orange-600 
+         hover:from-orange-600 hover:to-orange-700 text-white;
+}
+
+.btn-live {
+  @apply bg-gradient-to-r from-emerald-500 to-emerald-600 
+         hover:from-emerald-600 hover:to-emerald-700 text-white;
+}
+
+/* Status card variants */
+.status-warning {
+  @apply bg-orange-50 border-orange-200;
+}
+
+.status-success {
+  @apply bg-green-50 border-green-200;
+}
+```
 
 ## ⚙️ Configuration
 

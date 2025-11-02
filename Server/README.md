@@ -6,11 +6,13 @@ A robust and scalable Node.js server application built with Express.js, featurin
 
 - ✅ **Express.js** web framework with modern architecture
 - ✅ **Security** middleware with Helmet and CORS
+- ✅ **Maintenance Mode** with persistent state management
 - ✅ **Rate Limiting** with configurable windows and limits
 - ✅ **Input Validation** with custom validation schemas
 - ✅ **Logging System** with multiple levels and file output
 - ✅ **Error Handling** with detailed error responses
 - ✅ **Environment Configuration** with validation
+- ✅ **Database Abstraction Layer** with multiple adapters
 - ✅ **Testing Setup** with Jest and comprehensive coverage
 - ✅ **Code Quality** with ESLint and standardized formatting
 - ✅ **Request Monitoring** with timing and health checks
@@ -22,13 +24,24 @@ src/
 ├── app.js              # Main application entry point
 ├── config/             # Configuration management
 │   └── index.js       # Environment configuration
+├── data/               # Database abstraction layer
+│   ├── DatabaseFactory.js       # Factory for creating DB adapters
+│   ├── adapters/                # Database adapters (Memory, SQL, NoSQL)
+│   ├── repositories/            # Repository pattern implementation
+│   ├── models/                  # Data models
+│   └── migrations/              # Database migrations
 ├── middleware/         # Custom middleware functions
-│   └── index.js       # Authentication, validation, rate limiting
+│   ├── index.js                 # Authentication, validation, rate limiting
+│   └── maintenanceMode.js       # Maintenance mode middleware
 ├── routes/             # API route definitions
 │   └── api.js         # User management routes
 └── utils/             # Utility functions and helpers
-    ├── helpers.js     # Response helpers and utilities
-    └── logger.js      # Logging system
+    ├── MaintenanceManager.js    # Maintenance mode manager
+    ├── helpers.js               # Response helpers and utilities
+    └── logger.js                # Logging system
+
+data/                   # Persistent storage
+└── maintenance-state.json  # Maintenance mode state (auto-generated)
 
 tests/                  # Test files and setup
 ├── server.test.js     # Main server tests
@@ -116,7 +129,84 @@ docker-compose -f docker-compose.dev.yml up -d server-dev
 
 For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
 
-## 📚 API Documentation
+## � Maintenance Mode
+
+LaunchPad includes a robust maintenance mode system for managing application downtime gracefully.
+
+### Features
+
+- **Persistent State**: JSON file storage that survives server restarts
+- **API Request Blocking**: Automatically returns 503 during maintenance
+- **Custom Messages**: Communicate expected downtime to users
+- **Change History**: Audit trail of all maintenance mode changes
+- **Configurable Whitelist**: Allow critical endpoints during maintenance
+- **Database-Ready**: Easy migration to database storage when needed
+
+### MaintenanceManager API
+
+```javascript
+const MaintenanceManager = require('./utils/MaintenanceManager')
+
+// Initialize with file storage (default)
+const manager = new MaintenanceManager('file')
+await manager.initialize()
+
+// Get current status
+const status = await manager.getStatus()
+// Returns: { enabled, message, lastModified, modifiedBy, timestamp }
+
+// Toggle maintenance mode
+await manager.toggle('Scheduled upgrade', 'admin')
+
+// Set specific state
+await manager.setStatus(true, 'Database migration in progress', 'admin')
+
+// Update message without changing state
+await manager.updateMessage('Expected completion: 30 minutes', 'admin')
+
+// Get history
+const history = await manager.getHistory(10)
+
+// Switch to database storage (when ready)
+await manager.switchStorage('database', { dbConnection })
+```
+
+### Maintenance Mode Middleware
+
+The middleware automatically blocks requests during maintenance mode:
+
+```javascript
+const { createMaintenanceMiddleware } = require('./middleware/maintenanceMode')
+
+app.use(createMaintenanceMiddleware(maintenanceManager, {
+  whitelist: ['/health', '/maintenance'], // Always accessible
+  customResponse: (req, res, status) => {
+    // Optional custom response handler
+    res.status(503).json({ error: 'Maintenance' })
+  }
+}))
+```
+
+### Storage Options
+
+**File Storage** (default):
+- Location: `data/maintenance-state.json`
+- Persists through restarts
+- Easy to inspect and modify
+
+**Database Storage** (when ready):
+```javascript
+const manager = new MaintenanceManager('database', {
+  dbConnection: yourDbConnection
+})
+```
+
+**Memory Storage** (development/testing):
+```javascript
+const manager = new MaintenanceManager('memory')
+```
+
+## �📚 API Documentation
 
 ### Health Check
 
@@ -131,6 +221,79 @@ For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
   "version": "1.0.0",
   "memory": { ... },
   "pid": 12345
+}
+```
+
+### Maintenance Mode Endpoints
+
+#### Get Maintenance Status
+
+- **GET** `/maintenance` - Get current maintenance mode status
+
+```json
+{
+  "maintenanceMode": false,
+  "message": "Application is running normally",
+  "lastModified": "2025-11-02T00:00:00.000Z",
+  "modifiedBy": "admin",
+  "timestamp": "2025-11-02T04:00:00.000Z"
+}
+```
+
+#### Toggle Maintenance Mode
+
+- **POST** `/maintenance/toggle` - Toggle maintenance mode on/off
+
+Request Body:
+```json
+{
+  "message": "Scheduled maintenance - back at 2pm",
+  "modifiedBy": "admin"
+}
+```
+
+Response:
+```json
+{
+  "maintenanceMode": true,
+  "message": "Scheduled maintenance - back at 2pm",
+  "actionMessage": "Switched to maintenance mode",
+  "lastModified": "2025-11-02T04:00:00.000Z",
+  "modifiedBy": "admin",
+  "timestamp": "2025-11-02T04:00:00.000Z"
+}
+```
+
+#### Update Maintenance Message
+
+- **PUT** `/maintenance/message` - Update message without changing state
+
+Request Body:
+```json
+{
+  "message": "Extended maintenance - now expected at 4pm",
+  "modifiedBy": "admin"
+}
+```
+
+#### Get Maintenance History
+
+- **GET** `/maintenance/history?limit=10` - Get maintenance change history
+
+Response:
+```json
+{
+  "history": [
+    {
+      "enabled": true,
+      "message": "System upgrade",
+      "timestamp": "2025-11-02T04:00:00.000Z",
+      "modifiedBy": "admin",
+      "previousState": { "enabled": false, "message": "..." }
+    }
+  ],
+  "count": 1,
+  "timestamp": "2025-11-02T04:00:00.000Z"
 }
 ```
 

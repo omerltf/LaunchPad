@@ -15,6 +15,15 @@ A modern, production-ready template for building scalable full-stack application
 
 👉 **See [SECURITY_NOTICE.md](./SECURITY_NOTICE.md) for complete security details**
 
+## 📚 Documentation
+
+- **[Main README](./README.md)** - This file, project overview
+- **[Server Documentation](./Server/README.md)** - Backend API and features
+- **[Client Documentation](./Client/README.md)** - Frontend UI and components
+- **[Maintenance Mode Guide](./MAINTENANCE_MODE.md)** - Comprehensive maintenance mode documentation
+- **[Security Notice](./SECURITY_NOTICE.md)** - Security configuration details
+- **[Docker Guide](./DOCKER.md)** - Docker deployment instructions
+
 ## ✨ What's Included
 
 ### 🎯 Modern Tech Stack
@@ -36,6 +45,16 @@ A modern, production-ready template for building scalable full-stack application
 - ✅ **Environment Configuration** with validation
 - ✅ **Error Handling** with detailed error responses
 
+### 🔧 Maintenance Mode Features
+
+- ✅ **Persistent State Management** with JSON file storage
+- ✅ **API Request Blocking** during maintenance
+- ✅ **Custom Maintenance Messages** for user communication
+- ✅ **Change History Tracking** with audit trail
+- ✅ **Database-Ready Architecture** for easy migration
+- ✅ **Configurable Whitelist** for critical endpoints
+- ✅ **Client UI Toggle** with real-time status updates
+
 ### 🎨 Frontend Features
 
 - ✅ **React 18** with modern hooks and best practices
@@ -44,6 +63,7 @@ A modern, production-ready template for building scalable full-stack application
 - ✅ **Axios** for API communication with error handling
 - ✅ **Responsive Design** with modern animations and transitions
 - ✅ **Real-time Updates** and loading states
+- ✅ **Maintenance Mode UI** with visual indicators
 - ✅ **Environment Configuration** support
 
 ## 📁 Project Structure
@@ -54,17 +74,24 @@ Project1/
 │   ├── src/
 │   │   ├── app.js         # Main application entry point
 │   │   ├── config/        # Configuration management
+│   │   ├── data/          # Database abstraction layer
 │   │   ├── middleware/    # Custom middleware functions
+│   │   │   └── maintenanceMode.js  # Maintenance mode middleware
 │   │   ├── routes/        # API route definitions
 │   │   └── utils/         # Utility functions and helpers
+│   │       ├── MaintenanceManager.js  # Maintenance mode manager
+│   │       ├── logger.js  # Logging system
+│   │       └── helpers.js # Helper functions
+│   ├── data/              # Persistent storage
+│   │   └── maintenance-state.json  # Maintenance mode state
 │   ├── tests/             # Test files and setup
 │   ├── logs/              # Application logs (auto-generated)
 │   └── coverage/          # Test coverage reports
 │
 ├── Client/                # Frontend React application
 │   ├── src/
-│   │   ├── App.jsx        # Main React component
-│   │   ├── App.css        # Component styles
+│   │   ├── App.jsx        # Main React component (with maintenance UI)
+│   │   ├── index.css      # Global styles with maintenance mode styles
 │   │   ├── main.jsx       # Application entry point
 │   │   └── assets/        # Static assets
 │   └── public/            # Public assets
@@ -223,6 +250,62 @@ See [Client/README.md](./Client/README.md) for detailed frontend documentation i
 - Styling guidelines
 - Build and deployment
 
+## 🔧 Maintenance Mode
+
+LaunchPad includes a comprehensive maintenance mode system for gracefully handling downtime.
+
+### Features
+
+- **Persistent State**: Survives server restarts (JSON file storage)
+- **API Blocking**: Automatically returns 503 during maintenance
+- **Custom Messages**: Communicate expected downtime to users
+- **History Tracking**: Audit trail of all maintenance changes
+- **Database-Ready**: Easy migration to database storage
+
+### Usage
+
+**Toggle maintenance mode via API:**
+
+```bash
+# Enable maintenance mode
+curl -X POST http://localhost:3001/maintenance/toggle \
+  -H "Content-Type: application/json" \
+  -d '{"modifiedBy":"admin"}'
+
+# Update maintenance message
+curl -X PUT http://localhost:3001/maintenance/message \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Scheduled upgrade - back at 2pm","modifiedBy":"admin"}'
+
+# Check status
+curl http://localhost:3001/maintenance
+
+# View history
+curl http://localhost:3001/maintenance/history
+```
+
+**Via Web UI:**
+
+Navigate to `http://localhost:3000` and use the Maintenance Mode control panel.
+
+### API Endpoints
+
+- `GET /maintenance` - Get current maintenance status
+- `POST /maintenance/toggle` - Toggle maintenance mode on/off
+- `PUT /maintenance/message` - Update maintenance message
+- `GET /maintenance/history` - Get maintenance change history
+
+### Configuration
+
+Maintenance state is stored in `Server/data/maintenance-state.json`. To migrate to database:
+
+```javascript
+// In Server/src/app.js
+const maintenanceManager = new MaintenanceManager('database', {
+  dbConnection: yourDatabaseConnection
+})
+```
+
 ## 🧪 Testing
 
 ### Backend Tests
@@ -240,6 +323,13 @@ npm run lint:fix           # Fix linting issues
 ```bash
 cd Client
 npm run lint               # Run ESLint
+```
+
+### Maintenance Mode Testing
+
+```bash
+# Run the maintenance mode test script
+bash test-maintenance.sh
 ```
 
 ## 🏗 Building for Production
@@ -293,7 +383,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🆘 Support
 
 - Create an issue for bug reports or feature requests
-- Check the documentation in Server/README.md and Client/README.md
+- Check the documentation:
+  - [Server README](./Server/README.md) - Backend documentation
+  - [Client README](./Client/README.md) - Frontend documentation
+  - [Maintenance Mode Guide](./MAINTENANCE_MODE.md) - Maintenance mode details
 - Review the examples in the codebase
 
 ## 🎉 Acknowledgments
@@ -301,7 +394,42 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Express.js** for the robust web framework
 - **React** for the powerful frontend library
 - **Vite** for the amazing build tool
+- **Tailwind CSS** for the utility-first CSS framework
 - **Node.js** community for excellent packages
+
+## 📖 Quick Reference
+
+### Common Commands
+
+```bash
+# Development
+npm run dev              # Start dev server (both client & server)
+
+# Testing
+npm test                 # Run tests
+npm run lint            # Check code quality
+
+# Database
+npm run db:migrate      # Run migrations
+npm run db:status       # Check migration status
+
+# Maintenance Mode
+curl -X POST http://localhost:3001/maintenance/toggle  # Toggle mode
+curl http://localhost:3001/maintenance/history         # View history
+```
+
+### Key Files
+
+- `Server/src/app.js` - Main server application
+- `Server/src/utils/MaintenanceManager.js` - Maintenance mode manager
+- `Server/data/maintenance-state.json` - Maintenance state storage
+- `Client/src/App.jsx` - Main React component
+- `.env` - Environment configuration
+
+### Default Ports
+
+- **Client**: http://localhost:3000
+- **Server**: http://localhost:3001
 
 ---
 
