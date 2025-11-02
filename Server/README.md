@@ -190,11 +190,13 @@ app.use(createMaintenanceMiddleware(maintenanceManager, {
 ### Storage Options
 
 **File Storage** (default):
+
 - Location: `data/maintenance-state.json`
 - Persists through restarts
 - Easy to inspect and modify
 
 **Database Storage** (when ready):
+
 ```javascript
 const manager = new MaintenanceManager('database', {
   dbConnection: yourDbConnection
@@ -202,6 +204,7 @@ const manager = new MaintenanceManager('database', {
 ```
 
 **Memory Storage** (development/testing):
+
 ```javascript
 const manager = new MaintenanceManager('memory')
 ```
@@ -245,6 +248,7 @@ const manager = new MaintenanceManager('memory')
 - **POST** `/maintenance/toggle` - Toggle maintenance mode on/off
 
 Request Body:
+
 ```json
 {
   "message": "Scheduled maintenance - back at 2pm",
@@ -253,6 +257,7 @@ Request Body:
 ```
 
 Response:
+
 ```json
 {
   "maintenanceMode": true,
@@ -269,6 +274,7 @@ Response:
 - **PUT** `/maintenance/message` - Update message without changing state
 
 Request Body:
+
 ```json
 {
   "message": "Extended maintenance - now expected at 4pm",
@@ -281,6 +287,7 @@ Request Body:
 - **GET** `/maintenance/history?limit=10` - Get maintenance change history
 
 Response:
+
 ```json
 {
   "history": [
@@ -449,6 +456,49 @@ The application features a comprehensive logging system with:
 - **File Logging**: Optional file output to `logs/app.log`
 - **Request Logging**: Automatic HTTP request logging
 - **Error Tracking**: Detailed error logging with stack traces
+
+## 🔒 Security
+
+### Authentication & Authorization
+
+LaunchPad implements JWT-based authentication with comprehensive security features:
+
+- **Password Security**: Bcrypt hashing (10 rounds in production)
+- **JWT Tokens**: Separate access (15m) and refresh (7d) tokens
+- **Rate Limiting**: IP-based limits on all auth endpoints
+- **Role-Based Access Control**: User, moderator, and admin roles
+- **Input Validation**: Express-validator on all endpoints
+- **Data Sanitization**: Automatic removal of sensitive fields
+
+### Rate Limits (per IP)
+
+- Registration: 5 attempts per 15 minutes
+- Login: 10 attempts per 15 minutes
+- Token Refresh: 20 attempts per 15 minutes
+- Password Change: 5 attempts per 15 minutes
+
+### ⚠️ Production Requirements
+
+**CRITICAL**: This application is not production-ready out of the box. See [SECURITY.md](./SECURITY.md) for:
+
+- Refresh token storage limitations (in-memory only)
+- Required infrastructure (Redis for token storage)
+- Missing features (email verification, password reset)
+- Security checklist and deployment guide
+
+**Quick Start for Production:**
+
+1. Generate secure JWT secret:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+2. Set up Redis for token storage (required)
+3. Configure email service for verification/reset
+4. Review and complete [SECURITY.md](./SECURITY.md) checklist
+
+**For detailed security documentation, see [SECURITY.md](./SECURITY.md)**
 
 ## 🧪 Testing
 

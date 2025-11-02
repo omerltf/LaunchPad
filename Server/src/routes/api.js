@@ -18,6 +18,10 @@ const { config } = require('../config')
 
 const router = express.Router()
 
+// Mount API v1 routes
+const v1Routes = require('./v1')
+router.use('/v1', v1Routes)
+
 // In-memory storage for demo purposes
 // In a real application, this would be replaced with a database
 const users = [
@@ -59,28 +63,55 @@ router.get('/', asyncHandler(async (req, res) => {
   logger.info('API info requested', { ip: req.ip })
 
   sendSuccess(res, {
-    name: 'Node.js Template API',
+    name: 'LaunchPad API',
     version: config.api.version,
-    description: 'A well-structured Node.js API template with Express.js',
-    endpoints: {
-      users: {
-        'GET /api/users': 'Get all users with pagination and filtering',
-        'GET /api/users/:id': 'Get a specific user by ID',
-        'POST /api/users': 'Create a new user',
-        'PUT /api/users/:id': 'Update an existing user',
-        'DELETE /api/users/:id': 'Delete a user'
+    description: 'A well-structured Node.js API template with Express.js and authentication',
+    versions: {
+      v1: {
+        base: '/api/v1',
+        endpoints: {
+          auth: {
+            'POST /api/v1/auth/register': 'Register a new user',
+            'POST /api/v1/auth/login': 'Login user',
+            'POST /api/v1/auth/refresh': 'Refresh access token',
+            'POST /api/v1/auth/logout': 'Logout user',
+            'POST /api/v1/auth/change-password': 'Change password',
+            'GET /api/v1/auth/me': 'Get current user info'
+          },
+          users: {
+            'GET /api/v1/users': 'Get all users (admin)',
+            'GET /api/v1/users/profile': 'Get current user profile',
+            'PUT /api/v1/users/profile': 'Update current user profile',
+            'GET /api/v1/users/search': 'Search users (admin/moderator)',
+            'GET /api/v1/users/:id': 'Get user by ID',
+            'PUT /api/v1/users/:id': 'Update user',
+            'PATCH /api/v1/users/:id/role': 'Update user role (admin)',
+            'PATCH /api/v1/users/:id/deactivate': 'Deactivate user',
+            'PATCH /api/v1/users/:id/activate': 'Activate user (admin)',
+            'DELETE /api/v1/users/:id': 'Delete user (admin)'
+          }
+        }
       },
-      health: {
-        'GET /health': 'Check application health status'
+      demo: {
+        base: '/api',
+        note: 'Legacy demo endpoints for backward compatibility',
+        endpoints: {
+          'GET /api/users': 'Get demo users (no auth required)',
+          'POST /api/users': 'Create demo user (no auth required)'
+        }
       }
     },
     features: [
+      'JWT Authentication',
+      'Role-based authorization',
       'Input validation',
       'Rate limiting',
       'Error handling',
       'Logging',
       'CORS support',
-      'Security headers'
+      'Security headers',
+      'Password hashing',
+      'Token refresh'
     ]
   }, 'API information retrieved successfully')
 }))
