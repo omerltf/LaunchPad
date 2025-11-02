@@ -7,7 +7,7 @@ describe('Server API', () => {
       const response = await request(app).get('/')
 
       expect(response.status).toBe(200)
-      expect(response.body).toHaveProperty('message', 'Server is running!')
+      expect(response.body).toHaveProperty('message', 'Server is running in DEVELOPMENT MODE ONLY!')
       expect(response.body).toHaveProperty('timestamp')
       expect(response.body).toHaveProperty('environment')
       expect(response.body).toHaveProperty('version')
