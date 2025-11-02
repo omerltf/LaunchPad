@@ -118,5 +118,10 @@ export const getPasswordRequirements = () => {
     requirements.push('special character')
   }
   
-  return `Must be ${requirements.join(', ')}`
+  // Format with proper grammar
+  if (requirements.length > 1) {
+    const lastRequirement = requirements.pop()
+    return `Must be ${requirements.join(', ')} and ${lastRequirement}`
+  }
+  return `Must be ${requirements[0]}`
 }
