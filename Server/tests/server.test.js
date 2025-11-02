@@ -41,7 +41,9 @@ describe('Server API', () => {
       expect(response.body).toHaveProperty('data')
       expect(response.body.data).toHaveProperty('name')
       expect(response.body.data).toHaveProperty('version')
-      expect(response.body.data).toHaveProperty('endpoints')
+      expect(response.body.data).toHaveProperty('versions')
+      expect(response.body.data.versions).toHaveProperty('v1')
+      expect(response.body.data.versions).toHaveProperty('demo')
     })
   })
 

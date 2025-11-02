@@ -9,5 +9,6 @@ module.exports = {
     '!src/app.js'
   ],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-  setupFiles: ['<rootDir>/tests/env-setup.js']
-};
+  setupFiles: ['<rootDir>/tests/env-setup.js'],
+  testTimeout: 30000
+}

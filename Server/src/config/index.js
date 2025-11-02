@@ -49,6 +49,8 @@ const config = {
   // Security Configuration
   security: {
     jwtSecret: process.env.JWT_SECRET, // Remove fallback - make required
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '15m',
+    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
     helmet: {
       contentSecurityPolicy: {
         directives: {
