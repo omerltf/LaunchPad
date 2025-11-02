@@ -129,7 +129,7 @@ docker-compose -f docker-compose.dev.yml up -d server-dev
 
 For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
 
-## � Maintenance Mode
+## 🔧 Maintenance Mode
 
 LaunchPad includes a robust maintenance mode system for managing application downtime gracefully.
 
