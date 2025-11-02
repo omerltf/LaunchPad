@@ -32,10 +32,11 @@ export function AuthProvider({ children }) {
       setError('Your session has expired. Please log in again.')
     }
 
-    setTokenExpiredCallback(handleTokenExpired)
+    // Store the callback ID to ensure proper cleanup
+    const callbackId = setTokenExpiredCallback(handleTokenExpired)
     
-    // Cleanup: remove callback on unmount
-    return () => setTokenExpiredCallback(null)
+    // Cleanup: remove callback only if it's still ours
+    return () => setTokenExpiredCallback(null, callbackId)
   }, [])
 
   // Helper to extract error message
