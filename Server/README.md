@@ -206,7 +206,7 @@ const manager = new MaintenanceManager('database', {
 const manager = new MaintenanceManager('memory')
 ```
 
-## �📚 API Documentation
+## 📚 API Documentation
 
 ### Health Check
 
