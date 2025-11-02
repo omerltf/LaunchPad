@@ -108,6 +108,9 @@ const rateLimit = (options = {}) => {
  * @param {string} source - Source of data to validate ('body', 'query', 'params')
  * @returns {Function} Middleware function
  *
+ * NOTE: This middleware is for custom schema-based validation. If you're using
+ * express-validator chains (body(), query(), param()), use handleValidationErrors instead.
+ *
  * Schema format:
  * {
  *   fieldName: {
@@ -285,6 +288,10 @@ const handleCors = (req, res, next) => {
  * @param {Object} res - Express response object
  * @param {Function} next - Express next function
  * @returns {void}
+ *
+ * NOTE: This middleware is specifically for use with express-validator chains.
+ * It checks the validation results and returns errors if any validations failed.
+ * For custom schema-based validation, use validateInput instead.
  *
  * Example usage:
  * router.post('/endpoint',
