@@ -215,7 +215,7 @@ app.get('/maintenance/history', async (req, res) => {
       message: error.message
     })
   }
-})// Root endpoint with server information
+}) // Root endpoint with server information
 app.get('/', (req, res) => {
   const serverInfo = {
     message: 'Server is running in DEVELOPMENT MODE ONLY!',
