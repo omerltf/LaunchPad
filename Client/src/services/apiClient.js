@@ -7,8 +7,8 @@
 
 import axios from 'axios'
 import authService from './authService'
-import { AUTH_TOKEN_EXPIRED } from '../constants/eventNames'
 
+export const AUTH_TOKEN_EXPIRED = 'auth:tokenExpired'
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 // Create axios instance
