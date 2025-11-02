@@ -8,7 +8,7 @@
 const express = require('express')
 const { body, query, param } = require('express-validator')
 const { asyncHandler, sendSuccess } = require('../../utils/helpers')
-const { validateInput } = require('../../middleware')
+const { handleValidationErrors } = require('../../middleware')
 const { authenticate, authorize, checkOwnership } = require('../../middleware/auth')
 const UserService = require('../../services/UserService')
 
@@ -55,7 +55,7 @@ router.put(
       .isLength({ max: 50 })
       .withMessage('Last name must not exceed 50 characters')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const updatedUser = await userService.updateProfile(req.user.userId, req.body)
 
@@ -93,7 +93,7 @@ router.get(
       .isBoolean()
       .withMessage('isActive must be a boolean')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const result = await userService.getAllUsers(req.query)
 
@@ -116,7 +116,7 @@ router.get(
       .isLength({ min: 2 })
       .withMessage('Search query must be at least 2 characters')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const users = await userService.searchUsers(req.query.q)
 
@@ -140,7 +140,7 @@ router.get(
       .isInt({ min: 1 })
       .withMessage('Invalid user ID')
   ],
-  validateInput,
+  handleValidationErrors,
   checkOwnership('id'),
   asyncHandler(async (req, res) => {
     const user = await userService.getUserById(req.params.id)
@@ -177,7 +177,7 @@ router.put(
       .isLength({ max: 50 })
       .withMessage('Last name must not exceed 50 characters')
   ],
-  validateInput,
+  handleValidationErrors,
   checkOwnership('id'),
   asyncHandler(async (req, res) => {
     const updatedUser = await userService.updateProfile(req.params.id, req.body)
@@ -206,7 +206,7 @@ router.patch(
       .isIn(['user', 'moderator', 'admin'])
       .withMessage('Invalid role')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const updatedUser = await userService.updateUserRole(req.params.id, req.body.role)
 
@@ -230,7 +230,7 @@ router.patch(
       .isInt({ min: 1 })
       .withMessage('Invalid user ID')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const deactivatedUser = await userService.deactivateUser(
       req.params.id,
@@ -259,7 +259,7 @@ router.patch(
       .isInt({ min: 1 })
       .withMessage('Invalid user ID')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const activatedUser = await userService.activateUser(req.params.id)
 
@@ -284,7 +284,7 @@ router.delete(
       .isInt({ min: 1 })
       .withMessage('Invalid user ID')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     await userService.deleteUser(req.params.id, req.user.userId)
 
