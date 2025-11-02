@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import authService from '../services/authService'
+import { setTokenExpiredCallback } from '../services/apiClient'
 
 const AuthContext = createContext(null)
 
@@ -25,14 +26,16 @@ export function AuthProvider({ children }) {
 
     initAuth()
 
-    // Listen for token expiration events
+    // Register callback for token expiration
     const handleTokenExpired = () => {
       setUser(null)
       setError('Your session has expired. Please log in again.')
     }
 
-    window.addEventListener('auth:tokenExpired', handleTokenExpired)
-    return () => window.removeEventListener('auth:tokenExpired', handleTokenExpired)
+    setTokenExpiredCallback(handleTokenExpired)
+    
+    // Cleanup: remove callback on unmount
+    return () => setTokenExpiredCallback(null)
   }, [])
 
   // Helper to extract error message
