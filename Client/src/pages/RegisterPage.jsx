@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { validatePasswordStrength, getPasswordRequirements } from '../utils/passwordValidation'
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -29,37 +30,14 @@ function RegisterPage() {
   }
 
   const validatePassword = () => {
-    if (formData.password.length < 8) {
-      setPasswordError('Password must be at least 8 characters long')
+    // Validate password strength using shared validation rules
+    const validation = validatePasswordStrength(formData.password)
+    if (!validation.isValid) {
+      setPasswordError(validation.error)
       return false
     }
     
-    // Check for uppercase letter
-    if (!/[A-Z]/.test(formData.password)) {
-      setPasswordError('Password must contain at least one uppercase letter')
-      return false
-    }
-    
-    // Check for lowercase letter
-    if (!/[a-z]/.test(formData.password)) {
-      setPasswordError('Password must contain at least one lowercase letter')
-      return false
-    }
-    
-    // Check for number
-    if (!/[0-9]/.test(formData.password)) {
-      setPasswordError('Password must contain at least one number')
-      return false
-    }
-    
-    // Check for special character
-    // Regex for special characters allowed in password: !@#$%^&*()_+-=[]{};':"\|,.<>/?
-    const SPECIAL_CHAR_REGEX = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
-    if (!SPECIAL_CHAR_REGEX.test(formData.password)) {
-      setPasswordError('Password must contain at least one special character')
-      return false
-    }
-    
+    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match')
       return false
@@ -143,7 +121,7 @@ function RegisterPage() {
               autoComplete="new-password"
             />
             <p className="mt-1 text-xs text-gray-500">
-              Must be at least 8 characters with uppercase, lowercase, number, and special character
+              {getPasswordRequirements()}
             </p>
           </div>
 
