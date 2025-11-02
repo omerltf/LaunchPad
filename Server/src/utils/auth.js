@@ -26,6 +26,31 @@ const TOKEN_TYPES = {
 }
 
 /**
+ * Password validation rules
+ * These constants MUST match the client-side validation in Client/src/utils/passwordValidation.js
+ */
+const PASSWORD_RULES = {
+  MIN_LENGTH: 8,
+  MAX_LENGTH: 128,
+  REQUIRE_LOWERCASE: true,
+  REQUIRE_UPPERCASE: true,
+  REQUIRE_NUMBER: true,
+  REQUIRE_SPECIAL_CHAR: true
+}
+
+/**
+ * Regular expressions for password validation
+ * IMPORTANT: Keep this in sync with client-side validation
+ * Client regex: /[!@#$%^&*(),.?":{}|<>-]/
+ */
+const PASSWORD_REGEX = {
+  LOWERCASE: /[a-z]/,
+  UPPERCASE: /[A-Z]/,
+  NUMBER: /[0-9]/,
+  SPECIAL_CHAR: /[!@#$%^&*(),.?":{}|<>-]/
+}
+
+/**
  * Hash a password using bcrypt
  * @param {string} password - Plain text password
  * @returns {Promise<string>} Hashed password
@@ -190,35 +215,33 @@ const extractToken = (authHeader) => {
  */
 const validatePasswordStrength = (password) => {
   const errors = []
-  const minLength = 8
-  const maxLength = 128
 
   if (!password) {
     errors.push('Password is required')
     return { isValid: false, errors }
   }
 
-  if (password.length < minLength) {
-    errors.push(`Password must be at least ${minLength} characters long`)
+  if (password.length < PASSWORD_RULES.MIN_LENGTH) {
+    errors.push(`Password must be at least ${PASSWORD_RULES.MIN_LENGTH} characters long`)
   }
 
-  if (password.length > maxLength) {
-    errors.push(`Password must not exceed ${maxLength} characters`)
+  if (password.length > PASSWORD_RULES.MAX_LENGTH) {
+    errors.push(`Password must not exceed ${PASSWORD_RULES.MAX_LENGTH} characters`)
   }
 
-  if (!/[a-z]/.test(password)) {
+  if (PASSWORD_RULES.REQUIRE_LOWERCASE && !PASSWORD_REGEX.LOWERCASE.test(password)) {
     errors.push('Password must contain at least one lowercase letter')
   }
 
-  if (!/[A-Z]/.test(password)) {
+  if (PASSWORD_RULES.REQUIRE_UPPERCASE && !PASSWORD_REGEX.UPPERCASE.test(password)) {
     errors.push('Password must contain at least one uppercase letter')
   }
 
-  if (!/[0-9]/.test(password)) {
+  if (PASSWORD_RULES.REQUIRE_NUMBER && !PASSWORD_REGEX.NUMBER.test(password)) {
     errors.push('Password must contain at least one number')
   }
 
-  if (!/[!@#$%^&*(),.?":{}|<>-]/.test(password)) {
+  if (PASSWORD_RULES.REQUIRE_SPECIAL_CHAR && !PASSWORD_REGEX.SPECIAL_CHAR.test(password)) {
     errors.push('Password must contain at least one special character')
   }
 
