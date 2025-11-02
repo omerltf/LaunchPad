@@ -1,0 +1,88 @@
+{
+  "enabled": false,
+  "message": "Updated maintenance message",
+  "lastModified": "2025-11-02T04:56:03.965Z",
+  "modifiedBy": "test-admin",
+  "history": [
+    {
+      "enabled": true,
+      "message": "Test maintenance message",
+      "timestamp": "2025-11-02T04:55:46.900Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": false,
+        "message": "We are currently performing scheduled maintenance. Please check back soon."
+      }
+    },
+    {
+      "enabled": false,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:55:46.904Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": true,
+        "message": "Test maintenance message"
+      }
+    },
+    {
+      "enabled": true,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:55:46.905Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": false,
+        "message": "Enabling maintenance"
+      }
+    },
+    {
+      "enabled": false,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:55:46.908Z",
+      "modifiedBy": "admin",
+      "previousState": {
+        "enabled": true,
+        "message": "Enabling maintenance"
+      }
+    },
+    {
+      "enabled": true,
+      "message": "Test maintenance message",
+      "timestamp": "2025-11-02T04:56:03.956Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": false,
+        "message": "Updated maintenance message"
+      }
+    },
+    {
+      "enabled": false,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:56:03.959Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": true,
+        "message": "Test maintenance message"
+      }
+    },
+    {
+      "enabled": true,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:56:03.961Z",
+      "modifiedBy": "test-admin",
+      "previousState": {
+        "enabled": false,
+        "message": "Enabling maintenance"
+      }
+    },
+    {
+      "enabled": false,
+      "message": "Enabling maintenance",
+      "timestamp": "2025-11-02T04:56:03.963Z",
+      "modifiedBy": "admin",
+      "previousState": {
+        "enabled": true,
+        "message": "Enabling maintenance"
+      }
+    }
+  ]
+}
