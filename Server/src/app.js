@@ -169,7 +169,7 @@ app.put('/maintenance/message', async (req, res) => {
   try {
     const { message, modifiedBy } = req.body
     
-    if (!message) {
+    if (!message || !message.trim()) {
       return res.status(400).json({
         error: 'Message is required',
         code: 'MISSING_MESSAGE'
