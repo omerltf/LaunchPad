@@ -200,7 +200,7 @@ app.put('/maintenance/message', async (req, res) => {
 // Get maintenance history
 app.get('/maintenance/history', async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 10
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100)
     const history = await maintenanceManager.getHistory(limit)
     
     res.status(200).json({
