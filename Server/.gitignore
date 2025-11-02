@@ -19,6 +19,9 @@ coverage/
 # nyc test coverage
 .nyc_output
 
+# Maintenance state (runtime data)
+data/maintenance-state.json
+
 # Grunt intermediate storage
 .grunt
 
