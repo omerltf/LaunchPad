@@ -6,14 +6,28 @@
  */
 
 const express = require('express')
-const { body } = require('express-validator')
-const { asyncHandler, sendSuccess } = require('../../utils/helpers')
-const { validateInput, rateLimit } = require('../../middleware')
+const { body, validationResult } = require('express-validator')
+const { asyncHandler, sendSuccess, sendError } = require('../../utils/helpers')
+const { rateLimit } = require('../../middleware')
 const { authenticate, verifyRefreshToken } = require('../../middleware/auth')
 const AuthService = require('../../services/AuthService')
 
 const router = express.Router()
 const authService = new AuthService()
+
+/**
+ * Express-validator result handler middleware
+ * @param {Object} req - Express request
+ * @param {Object} res - Express response
+ * @param {Function} next - Express next function
+ */
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return sendError(res, 'Validation failed', 400, { errors: errors.array() }, 'VALIDATION_ERROR')
+  }
+  next()
+}
 
 /**
  * @route   POST /api/v1/auth/register
@@ -45,7 +59,7 @@ router.post(
       .isLength({ max: 50 })
       .withMessage('Last name must not exceed 50 characters')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const result = await authService.register(req.body)
 
@@ -73,7 +87,7 @@ router.post(
       .notEmpty()
       .withMessage('Password is required')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const result = await authService.login(req.body)
 
@@ -97,7 +111,7 @@ router.post(
       .notEmpty()
       .withMessage('Refresh token is required')
   ],
-  validateInput,
+  handleValidationErrors,
   verifyRefreshToken,
   asyncHandler(async (req, res) => {
     const result = await authService.refreshAccessToken(req.userId, req.body.refreshToken)
@@ -143,7 +157,7 @@ router.post(
       .isLength({ min: 8 })
       .withMessage('New password must be at least 8 characters long')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body
 
