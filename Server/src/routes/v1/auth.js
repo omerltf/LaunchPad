@@ -6,28 +6,14 @@
  */
 
 const express = require('express')
-const { body, validationResult } = require('express-validator')
-const { asyncHandler, sendSuccess, sendError } = require('../../utils/helpers')
-const { rateLimit } = require('../../middleware')
+const { body } = require('express-validator')
+const { asyncHandler, sendSuccess } = require('../../utils/helpers')
+const { rateLimit, handleValidationErrors } = require('../../middleware')
 const { authenticate, verifyRefreshToken } = require('../../middleware/auth')
 const AuthService = require('../../services/AuthService')
 
 const router = express.Router()
 const authService = new AuthService()
-
-/**
- * Express-validator result handler middleware
- * @param {Object} req - Express request
- * @param {Object} res - Express response
- * @param {Function} next - Express next function
- */
-const handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return sendError(res, 'Validation failed', 400, { errors: errors.array() }, 'VALIDATION_ERROR')
-  }
-  next()
-}
 
 /**
  * @route   POST /api/v1/auth/register

@@ -7,6 +7,7 @@
 
 const { config } = require('../config')
 const { sendError } = require('../utils/helpers')
+const { validationResult } = require('express-validator')
 
 /**
  * Authentication middleware (JWT token verification placeholder)
@@ -277,10 +278,34 @@ const handleCors = (req, res, next) => {
   next()
 }
 
+/**
+ * Express-validator result handler middleware
+ * @description Checks validation results from express-validator and returns errors if any
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ * @returns {void}
+ *
+ * Example usage:
+ * router.post('/endpoint',
+ *   [body('email').isEmail(), body('password').isLength({ min: 8 })],
+ *   handleValidationErrors,
+ *   (req, res) => { ... }
+ * )
+ */
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return sendError(res, 'Validation failed', 400, { errors: errors.array() }, 'VALIDATION_ERROR')
+  }
+  next()
+}
+
 module.exports = {
   authenticateToken,
   rateLimit,
   validateInput,
   requestTimer,
-  handleCors
+  handleCors,
+  handleValidationErrors
 }
