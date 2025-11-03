@@ -142,11 +142,11 @@ app.post('/maintenance/toggle', async (req, res) => {
       message || null,
       modifiedBy || 'admin'
     )
-    
-    const actionMessage = status.enabled 
-      ? 'Switched to maintenance mode' 
+
+    const actionMessage = status.enabled
+      ? 'Switched to maintenance mode'
       : 'Switched to live mode'
-    
+
     res.status(200).json({
       maintenanceMode: status.enabled,
       message: status.message,
@@ -168,19 +168,19 @@ app.post('/maintenance/toggle', async (req, res) => {
 app.put('/maintenance/message', async (req, res) => {
   try {
     const { message, modifiedBy } = req.body
-    
+
     if (!message || !message.trim()) {
       return res.status(400).json({
         error: 'Message is required',
         code: 'MISSING_MESSAGE'
       })
     }
-    
+
     const status = await maintenanceManager.updateMessage(
       message,
       modifiedBy || 'admin'
     )
-    
+
     res.status(200).json({
       maintenanceMode: status.enabled,
       message: status.message,
@@ -200,13 +200,13 @@ app.put('/maintenance/message', async (req, res) => {
 // Get maintenance history
 app.get('/maintenance/history', async (req, res) => {
   try {
-    let limit = parseInt(req.query.limit, 10);
+    let limit = parseInt(req.query.limit, 10)
     if (isNaN(limit)) {
-      limit = 10;
+      limit = 10
     }
-    limit = Math.min(Math.max(limit, 1), 100);
+    limit = Math.min(Math.max(limit, 1), 100)
     const history = await maintenanceManager.getHistory(limit)
-    
+
     res.status(200).json({
       history,
       count: history.length,

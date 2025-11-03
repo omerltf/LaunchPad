@@ -7,6 +7,7 @@
 
 const { config } = require('../config')
 const { sendError } = require('../utils/helpers')
+const { validationResult } = require('express-validator')
 
 /**
  * Authentication middleware (JWT token verification placeholder)
@@ -106,6 +107,9 @@ const rateLimit = (options = {}) => {
  * @param {Object} schema - Validation schema
  * @param {string} source - Source of data to validate ('body', 'query', 'params')
  * @returns {Function} Middleware function
+ *
+ * NOTE: This middleware is for custom schema-based validation. If you're using
+ * express-validator chains (body(), query(), param()), use handleValidationErrors instead.
  *
  * Schema format:
  * {
@@ -277,10 +281,38 @@ const handleCors = (req, res, next) => {
   next()
 }
 
+/**
+ * Express-validator result handler middleware
+ * @description Checks validation results from express-validator and returns errors if any
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ * @returns {void}
+ *
+ * NOTE: This middleware is specifically for use with express-validator chains.
+ * It checks the validation results and returns errors if any validations failed.
+ * For custom schema-based validation, use validateInput instead.
+ *
+ * Example usage:
+ * router.post('/endpoint',
+ *   [body('email').isEmail(), body('password').isLength({ min: 8 })],
+ *   handleValidationErrors,
+ *   (req, res) => { ... }
+ * )
+ */
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return sendError(res, 'Validation failed', 400, { errors: errors.array() }, 'VALIDATION_ERROR')
+  }
+  next()
+}
+
 module.exports = {
   authenticateToken,
   rateLimit,
   validateInput,
   requestTimer,
-  handleCors
+  handleCors,
+  handleValidationErrors
 }

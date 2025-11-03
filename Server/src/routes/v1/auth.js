@@ -8,7 +8,7 @@
 const express = require('express')
 const { body } = require('express-validator')
 const { asyncHandler, sendSuccess } = require('../../utils/helpers')
-const { validateInput, rateLimit } = require('../../middleware')
+const { rateLimit, handleValidationErrors } = require('../../middleware')
 const { authenticate, verifyRefreshToken } = require('../../middleware/auth')
 const AuthService = require('../../services/AuthService')
 
@@ -45,7 +45,7 @@ router.post(
       .isLength({ max: 50 })
       .withMessage('Last name must not exceed 50 characters')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const result = await authService.register(req.body)
 
@@ -73,7 +73,7 @@ router.post(
       .notEmpty()
       .withMessage('Password is required')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const result = await authService.login(req.body)
 
@@ -97,7 +97,7 @@ router.post(
       .notEmpty()
       .withMessage('Refresh token is required')
   ],
-  validateInput,
+  handleValidationErrors,
   verifyRefreshToken,
   asyncHandler(async (req, res) => {
     const result = await authService.refreshAccessToken(req.userId, req.body.refreshToken)
@@ -143,7 +143,7 @@ router.post(
       .isLength({ min: 8 })
       .withMessage('New password must be at least 8 characters long')
   ],
-  validateInput,
+  handleValidationErrors,
   asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body
 

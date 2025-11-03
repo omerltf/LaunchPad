@@ -7,11 +7,16 @@ A modern React client application built with Vite to interact with the Node.js s
 - ✅ **React 18** with modern hooks and best practices
 - ✅ **Vite** for lightning-fast development and optimized builds
 - ✅ **Tailwind CSS** with custom design system and components
+- ✅ **React Router** for client-side routing and navigation
+- ✅ **JWT Authentication** with automatic token refresh and management
+- ✅ **Protected Routes** with authentication guards
 - ✅ **Axios** for robust API communication with error handling
+- ✅ **Automatic Token Injection** via request interceptors
 - ✅ **Responsive Design** with modern layouts and animations
 - ✅ **Real-time Server Status** monitoring and health checks
 - ✅ **Maintenance Mode UI** with visual indicators and controls
 - ✅ **User Management** with full CRUD operations
+- ✅ **Role-Based UI** with conditional rendering
 - ✅ **Loading States** and progress indicators
 - ✅ **Error Handling** with user-friendly messages
 - ✅ **Modern UI** with gradients, animations, and hover effects
@@ -21,21 +26,35 @@ A modern React client application built with Vite to interact with the Node.js s
 
 ```text
 src/
-├── App.jsx           # Main application component
-├── App.css           # Component styles and responsive design
-├── index.css         # Global styles and CSS variables
-├── main.jsx          # Application entry point and React setup
-└── assets/           # Static assets (images, icons)
-
-public/               # Static public assets
-├── index.html        # HTML template
-└── vite.svg         # Vite logo
+├── App.jsx                    # Main application with routing
+├── main.jsx                   # Application entry point with providers
+├── index.css                  # Global styles and CSS variables
+├── components/
+│   └── Navigation.jsx         # Navigation bar with auth state
+├── pages/
+│   ├── HomePage.jsx           # Home page with server status
+│   ├── LoginPage.jsx          # Login form
+│   ├── RegisterPage.jsx       # Registration form
+│   └── Dashboard.jsx          # Protected dashboard
+├── services/
+│   ├── authService.js         # Authentication API service
+│   └── apiClient.js           # Axios instance with interceptors
+├── hooks/
+│   └── useAuth.jsx            # Auth context and hook
+├── utils/
+│   └── ProtectedRoute.jsx     # Route guard component
+├── assets/                    # Static assets (images, icons)
+└── config/                    # Configuration files
 
 config files:
-├── vite.config.js    # Vite configuration
-├── eslint.config.js  # ESLint configuration
-├── package.json      # Dependencies and scripts
-└── README.md         # This file
+├── .env                       # Environment variables (gitignored)
+├── .env.example               # Environment variables template
+├── vite.config.js             # Vite configuration
+├── eslint.config.js           # ESLint configuration
+├── tailwind.config.js         # Tailwind CSS configuration
+├── package.json               # Dependencies and scripts
+├── CLIENT_AUTH_GUIDE.md       # Authentication integration guide
+└── README.md                  # This file
 ```
 
 ## 🛠 Getting Started
@@ -48,13 +67,23 @@ config files:
 
 ### Installation
 
-1: Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2: Start the development server:
+2. Configure environment variables:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and set your API URL
+# VITE_API_URL=http://localhost:3001
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
@@ -91,9 +120,68 @@ For comprehensive Docker documentation, see [../DOCKER.md](../DOCKER.md)
 ## 📚 Available Scripts
 
 - `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
+- `npm run build` - Build for production (disabled in template)
+- `npm run preview` - Preview production build locally (disabled in template)
 - `npm run lint` - Run ESLint for code quality
+
+## 🔐 Authentication
+
+The client includes a complete JWT authentication system:
+
+### Quick Start
+
+1. **Register** a new account at `/register`
+2. **Login** at `/login`
+3. **Access** protected routes like `/dashboard`
+4. **Logout** via the navigation bar
+
+### Features
+
+- **JWT Token Management**: Automatic access and refresh token handling
+- **Protected Routes**: Routes requiring authentication redirect to login
+- **Automatic Token Refresh**: Seamless token renewal on expiration
+- **Request Interceptors**: Automatic token injection in API requests
+- **Auth Context**: Global authentication state via React Context
+- **Role-Based UI**: Conditional rendering based on user roles
+- **Persistent Sessions**: Tokens stored in localStorage
+- **Session Recovery**: Automatic login restoration on page refresh
+
+### Authentication API
+
+```javascript
+// Using the useAuth hook
+import { useAuth } from './hooks/useAuth'
+
+function MyComponent() {
+  const { user, isAuthenticated, login, logout, register } = useAuth()
+  
+  // Login
+  await login({ email: 'user@example.com', password: 'password' })
+  
+  // Register
+  await register({ email: 'user@example.com', password: 'password', username: 'user' })
+  
+  // Logout
+  await logout()
+  
+  // Check auth status
+  if (isAuthenticated) {
+    console.log('Logged in as:', user.email)
+  }
+}
+```
+
+### Making Authenticated API Calls
+
+```javascript
+import apiClient from './services/apiClient'
+
+// Tokens are automatically included in requests
+const response = await apiClient.get('/api/v1/users/me')
+const userData = response.data
+```
+
+For complete authentication integration guide, see [CLIENT_AUTH_GUIDE.md](./CLIENT_AUTH_GUIDE.md)
 
 ## 🎯 Features Overview
 
