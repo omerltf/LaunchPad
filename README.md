@@ -17,9 +17,21 @@ A modern, production-ready template for building scalable full-stack application
 
 ## 📚 Documentation
 
+### Getting Started
+
+- **[Setup Script](./setup.sh)** - Automated setup for new projects
+- **[Contributing Guide](./CONTRIBUTING.md)** - Fork and customization instructions
+- **[README Template](./README.template.md)** - Template for your project's README
+
+### Core Documentation
+
 - **[Main README](./README.md)** - This file, project overview
 - **[Server Documentation](./Server/README.md)** - Backend API and features
 - **[Client Documentation](./Client/README.md)** - Frontend UI and components
+- **[Changelog](./CHANGELOG.md)** - Version history and changes
+
+### Features & Configuration
+
 - **[Maintenance Mode Guide](./MAINTENANCE_MODE.md)** - Comprehensive maintenance mode documentation
 - **[Security Notice](./SECURITY_NOTICE.md)** - Security configuration details
 - **[Docker Guide](./DOCKER.md)** - Docker deployment instructions
@@ -99,19 +111,42 @@ Project1/
 └── README.md              # This file
 ```
 
-## � Getting Started
+## 🚀 Getting Started
 
-### Option 1: Use as Template (Recommended)
+### Quick Setup (Recommended)
 
-1. **Click "Use this template"** on GitHub to create your own repository
-2. **Clone your new repository**:
+1. **Fork or clone this repository**:
 
    ```bash
    git clone https://github.com/yourusername/your-project-name.git
    cd your-project-name
    ```
 
-3. **Install dependencies**:
+2. **Run the setup script**:
+
+   ```bash
+   ./setup.sh
+   ```
+
+   The setup script will:
+   - ✅ Guide you through project customization
+   - ✅ Create environment files (.env)
+   - ✅ Generate secure JWT secret
+   - ✅ Install dependencies
+   - ✅ Verify system requirements
+
+### Manual Setup
+
+If you prefer manual setup:
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/your-project-name.git
+   cd your-project-name
+   ```
+
+2. **Install dependencies**:
 
    ```bash
    # Install server dependencies
@@ -121,7 +156,33 @@ Project1/
    cd ../Client && npm install
    ```
 
-4. **Start development**:
+3. **Configure environment files** (see detailed instructions below)
+
+```text
+
+## � Getting Started
+
+### Option 1: Use as Template (Recommended)
+
+1: **Click "Use this template"** on GitHub to create your own repository
+2: **Clone your new repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/your-project-name.git
+   cd your-project-name
+   ```
+
+3: **Install dependencies**:
+
+   ```bash
+   # Install server dependencies
+   cd Server && npm install
+   
+   # Install client dependencies  
+   cd ../Client && npm install
+   ```
+
+4: **Start development**:
 
    ```bash
    # Terminal 1: Start backend server
@@ -170,6 +231,8 @@ The application will be available at:
 
 - **Frontend**: <http://localhost:3000>
 - **Backend API**: <http://localhost:3001>
+
+## � Getting Started
 
 ## 🎨 Customizing Your Project
 
@@ -428,8 +491,8 @@ curl http://localhost:3001/maintenance/history         # View history
 
 ### Default Ports
 
-- **Client**: http://localhost:3000
-- **Server**: http://localhost:3001
+- **Client**: <http://localhost:3000>
+- **Server**: <http://localhost:3001>
 
 ---
 
