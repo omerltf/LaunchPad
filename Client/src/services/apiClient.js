@@ -22,18 +22,32 @@ const apiClient = axios.create({
 let isRefreshing = false
 let failedQueue = []
 let onTokenExpiredCallback = null
+let callbackId = null
 
 /**
  * Set callback to be called when token expires
  * @param {Function} callback - Function to call when token expires
+ * @param {string} id - Unique identifier for the callback owner
+ * @returns {string} The callback identifier
  * @note This is designed to be called once by the AuthProvider at app initialization.
- *       This is enforced: attempting to set the callback more than once will throw an error.
+ *       Since AuthProvider is a singleton at the root level, there's no risk of conflicts.
+ *       The id parameter ensures proper cleanup without affecting other instances.
  */
-export const setTokenExpiredCallback = (callback) => {
-  if (onTokenExpiredCallback !== null) {
-    throw new Error('onTokenExpiredCallback is already set. Only one callback can be registered.');
+export const setTokenExpiredCallback = (callback, id = null) => {
+  // If callback is null, only clear if the id matches the current callback owner
+  if (callback === null) {
+    if (id === null || id === callbackId) {
+      onTokenExpiredCallback = null
+      callbackId = null
+    }
+    return id
   }
+  
+  // Setting a new callback
+  const newId = id || Math.random().toString(36).substring(7)
   onTokenExpiredCallback = callback
+  callbackId = newId
+  return newId
 }
 
 /**
